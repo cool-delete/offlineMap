@@ -1,0 +1,19 @@
+{//npm install --save-dev typescript tslint @types/node 安装
+  // ./node_modules/.bin/tsc --init 生成tsconfig
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    // 这样就可以对 `this` 上的数据属性进行更严格的推断`
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "isolatedModules": true
+
+  },
+  "include": [
+    "src/**/*", "src/main.ts" //**/递归匹配任意子目录
+],
+"exclude": [
+    "node_modules"
+]
+}

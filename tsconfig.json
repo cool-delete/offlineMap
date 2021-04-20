@@ -7,12 +7,12 @@
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
-    "isolatedModules": true
+    "isolatedModules": true,
 
   },
   "include": [
     "src/**/*", "src/main.ts" //**/递归匹配任意子目录
-],
+, "public/lib"],
 "exclude": [
     "node_modules"
 ]

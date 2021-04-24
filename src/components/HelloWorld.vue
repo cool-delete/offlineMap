@@ -9,7 +9,7 @@
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string,, BMAP_HYBRID_MAP: string,
+declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BMAP_HYBRID_MAP: string
 //@ts-ignore
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay.ts";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";

@@ -1,9 +1,9 @@
-
+<template>
 <el-submenu index="1-4">
   <template #title>选项4</template>
   <el-menu-item index="1-4-1">选项1</el-menu-item>
 </el-submenu>
-
+</template>
 
 <script lang="ts">
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）

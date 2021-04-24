@@ -69,6 +69,7 @@
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》'
 import { defineComponent, PropType } from "vue";
+import history from "./history.vue";
 interface pos {
   lng: number;
   lat: number;

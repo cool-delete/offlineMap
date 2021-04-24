@@ -1,7 +1,7 @@
 <!-- 地图展示 -->
 <template>
   <div style="width: 99vw; height: 95vh">
-    <navgate></navgate>
+    <navgate :cars="cars" @setPositions="setView($event, 'setMapView')"></navgate>
     <div id="allmap"></div>
   </div>
 </template>
@@ -64,6 +64,10 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    setView(pos, define) {
+      console.log(pos.car);
+      this.map.setCenter(pos.icar.point);
+    },
     hideTol() {
       setTimeout(
         () =>
@@ -176,8 +180,8 @@ export default {
 <style  scoped>
 /* @import url('../../lib/DrawingManager_min.css'); 引入公共css类 */
 #allmap {
-  width: 99.5vw;
-  height: 96vh;
+  width: 99.4vw;
+  height: 98.9vh;
   overflow: hidden;
   margin-top: 1vh;
   font-family: "微软雅黑";

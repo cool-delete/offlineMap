@@ -15,7 +15,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay.ts";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
-import { debounce } from "throttle-debounce";
+import { debounce } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
 export default {
@@ -155,8 +155,8 @@ export default {
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.hideTol();
-    let draw = debounce(10, false, (point) =>
-      point.icar.setPosition(new BMap.Point(point.lng, point.lat))
+    let draw = debounce( (point) =>
+      point.icar.setPosition(new BMap.Point(point.lng, point.lat)),10, 
     );
     this.cars.forEach((car) => {
       let handle = {

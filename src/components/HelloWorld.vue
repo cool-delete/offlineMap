@@ -1,6 +1,7 @@
 <!-- 地图展示 -->
 <template>
-  <div style="width: 100%; height: 100%">
+  <div style="width: 99vw; height: 95vh">
+    <navgate></navgate>
     <div id="allmap"></div>
   </div>
 </template>
@@ -12,10 +13,10 @@ import ComplexCustomOverlay from "@m/ComplexCustomOverlay.ts";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
 import { debounce } from "throttle-debounce";
 import carICon from "@/assets/car.png";
-
+import navgate from "@/components/navgate.vue";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: { navgate },
   data() {
     //这里存放数据
     return {
@@ -175,10 +176,11 @@ export default {
 <style  scoped>
 /* @import url('../../lib/DrawingManager_min.css'); 引入公共css类 */
 #allmap {
-  width: 100%;
-  height: 100vh;
+  width: 99.5vw;
+  height: 96vh;
   overflow: hidden;
-  margin: 0;
+  margin-top: 1vh;
   font-family: "微软雅黑";
+  position: fixed;
 }
 </style>

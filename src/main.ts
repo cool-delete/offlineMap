@@ -4,7 +4,8 @@ import './index.css'
 import BMap from '..@lib/map3.0.js?url'
 // import BaiduMap from 'vue-offline-baidu-map'
 import router from './router/index'; //引入vue-router
-import 'element-plus/lib/theme-chalk/base.css'
+// import 'element-plus/lib/theme-chalk/base.css'
+import 'element-plus/lib/theme-chalk/index.css'
 import {
   ElRadio,
   ElRadioButton,

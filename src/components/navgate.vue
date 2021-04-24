@@ -51,14 +51,32 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》'
-
+import { PropType } from "vue";
+interface pos {
+  lng: number;
+  lat: number;
+  icar: {};
+}
+interface car {
+  identificationCode: "";
+  superiorDepartments: "";
+  higherUnit: "";
+  state: "";
+  trackPoints: [
+    {
+      lng: number;
+      lat: number;
+    }
+  ];
+  position: pos;
+}
 export default {
   // import引入的组件需要注入到对象中才能使用
   components: {},
-  props: { cars: Array },
+  props: { cars: Array as PropType<car[]> },
   data() {
     return {
       isCollapse: true,
@@ -82,13 +100,14 @@ export default {
   activated() {}, // 如果页面有keep-alive缓存功能，这个函数会触发
   // 方法集合
   methods: {
-    handleOpen(key, keyPath) {
+    handleOpen(key: string, keyPath: string) {
       console.log(key, keyPath);
     },
-    handleClose(key, keyPath) {
+    handleClose(key: string, keyPath: string) {
       console.log(key, keyPath);
     },
-    setPositions(pos) {
+    setPositions(pos: pos) {
+      //@ts-ignore
       this.$emit("setPositions", pos);
     },
   },
@@ -96,7 +115,7 @@ export default {
 </script>
 
 <style >
-@import url("element-plus/lib/theme-chalk/index.css");
+/* @import url("element-plus/lib/theme-chalk/index.css"); */
 .nav {
   position: fixed;
   z-index: 20;

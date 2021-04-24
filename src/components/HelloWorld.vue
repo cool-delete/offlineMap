@@ -1,8 +1,11 @@
 <!-- 地图展示 -->
 <template>
   <div style="width: 99vw; height: 95vh">
-    <navgate :cars="cars" @focusAll='focusAll()' 
-    @setPositions="setView($event, 'setMapView')"></navgate>
+    <navgate
+      :cars="cars"
+      @focusAll="focusAll()"
+      @setPositions="setView($event, 'setMapView')"
+    ></navgate>
     <div id="allmap"></div>
   </div>
 </template>
@@ -65,9 +68,8 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    focusAll(){
-      let ponts=this.cars.map(car=>car.position.icar.point)
-      this.map.setViewport(ponts)
+    focusAll() {
+      this.map.setViewport(this.cars.map((car) => car.position.icar.point));
     },
     setView(pos, define) {
       console.log(pos.car);

@@ -18,7 +18,7 @@ export default defineConfig({
   base: "./",
   // publicDir: "./lib",
   build: {
-    assetsDir:'./lib',
+    assetsDir:'./',
     rollupOptions: {
       inlineDynamicImports: true
     },

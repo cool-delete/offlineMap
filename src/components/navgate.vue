@@ -24,8 +24,7 @@
             :key="car.identificationCode"
             :index="car.identificationCode"
             @click="setPositions(car.position)"
-            >{{ car.identificationCode }}</el-menu-item
-          >
+          >{{ car.identificationCode }}</el-menu-item>
         </el-menu-item-group>
         <!-- <el-menu-item-group title="分组2">
           <el-menu-item index="1-3">选项3</el-menu-item>
@@ -33,7 +32,7 @@
         <el-submenu index="1-4">
           <template #title>选项4</template>
           <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu> -->
+        </el-submenu>-->
       </el-submenu>
       <el-menu-item index="2" @click="focusingOnTheMap()">
         <i class="el-icon-aim"></i>
@@ -51,16 +50,11 @@
             :key="car.identificationCode"
             :index="car.identificationCode"
             @click="setPositions(car.position)"
-            >{{ car.identificationCode }}</el-menu-item
-          >
+          >{{ car.identificationCode }}</el-menu-item>
         </el-menu-item-group>
-        <!-- <el-menu-item-group title="分组2">
-          <el-menu-item index="1-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="1-4">
-          <template #title>选项4</template>
-          <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu> -->
+
+        <el-menu-item index="1-3">选项3</el-menu-item>
+        <history></history>
       </el-submenu>
 
       <el-menu-item index="3">
@@ -95,7 +89,7 @@ interface car {
 }
 export default defineComponent({
   // import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: { history },
   props: { cars: Array as PropType<car[]> },
   data() {
     return {
@@ -108,16 +102,16 @@ export default defineComponent({
   // 监控data中的数据变化
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() { },
   // 生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
-  beforeCreate() {}, // 生命周期 - 创建之前
-  beforeMount() {}, // 生命周期 - 挂载之前
-  beforeUpdate() {}, // 生命周期 - 更新之前
-  updated() {}, // 生命周期 - 更新之后
-  beforeUnmount() {}, // 生命周期 - 销毁之前
-  unmounted() {}, // 生命周期 - 销毁完成
-  activated() {}, // 如果页面有keep-alive缓存功能，这个函数会触发
+  mounted() { },
+  beforeCreate() { }, // 生命周期 - 创建之前
+  beforeMount() { }, // 生命周期 - 挂载之前
+  beforeUpdate() { }, // 生命周期 - 更新之前
+  updated() { }, // 生命周期 - 更新之后
+  beforeUnmount() { }, // 生命周期 - 销毁之前
+  unmounted() { }, // 生命周期 - 销毁完成
+  activated() { }, // 如果页面有keep-alive缓存功能，这个函数会触发
   // 方法集合
   methods: {
     handleOpen(key: string, keyPath: string) {

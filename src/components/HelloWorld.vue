@@ -98,7 +98,7 @@ export default {
       }); //创建圆
       //绘制
       let txt = "广州珠江帝景电子围栏 现有",
-        mouseoverTxt = txt + " " + parseInt(Math.random() * 100, 10) + "车辆";
+        mouseoverTxt = txt + " " + 1 + "车辆";
 
       const electronicFence = new ComplexCustomOverlay(
         currentPoint,

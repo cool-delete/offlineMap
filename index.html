@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <style>
+    .BMap_cpyCtrl.BMap_noprint.anchorBL {
+      z-index: -1 !important;
+    }
+
+    #allmap .anchorBL {
+      z-index: -1 !important;
+    }
+
+    .BMap_noprint.anchorTR {
+      display: none;
+    }
+  </style>
   <meta charset="UTF-8">
   <link rel="icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,8 +36,11 @@
   <link rel="stylesheet" href="/lib/DrawingManager_min.css" />
   <script type="text/javascript" src="/lib/DrawingManager_min.js"></script>
 </head>
+
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>
+
+
 </html>

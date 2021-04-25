@@ -5,63 +5,68 @@
       <el-radio-button :label="true">收起</el-radio-button>
       <el-radio-button :label="false">展开</el-radio-button>
     </el-radio-group>
-    <el-menu
-      default-active="1-4-1"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
-      :collapse="isCollapse"
+    <el-scrollbar
+      class="default-scrollbar"
+      wrap-class="default-scrollbar__wrap"
+      view-class="default-scrollbar__view"
+
+   
     >
-      <el-submenu index="1">
-        <template #title>
-          <i class="el-icon-location"></i>
-          <span>导航一</span>
-        </template>
-        <el-menu-item-group>
-          <template #title>分组一</template>
-          <el-menu-item
-            v-for="car of cars"
-            :key="car.identificationCode"
-            :index="car.identificationCode"
-            @click="setPositions(car.position)"
-          >{{ car.identificationCode }}</el-menu-item>
-        </el-menu-item-group>
-        <!-- <el-menu-item-group title="分组2">
+      <el-menu
+        default-active="1-4-1"
+        class="el-menu-vertical-demo"
+        @open="handleOpen"
+        @close="handleClose"
+        :collapse="isCollapse"
+      >
+        <el-submenu index="1">
+          <template #title>
+            <i class="el-icon-location"></i>
+            <span>导航一</span>
+          </template>
+          <el-menu-item-group>
+            <template #title>分组一</template>
+
+            <el-menu-item
+              v-for="car of cars"
+              :key="car.identificationCode"
+              :index="car.identificationCode"
+              @click="setPositions(car.position)"
+            >{{ car.identificationCode }}</el-menu-item>
+          </el-menu-item-group>
+          <!-- <el-menu-item-group title="分组2">
           <el-menu-item index="1-3">选项3</el-menu-item>
         </el-menu-item-group>
         <el-submenu index="1-4">
           <template #title>选项4</template>
           <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu>-->
-      </el-submenu>
-      <el-menu-item index="2" @click="focusingOnTheMap()">
-        <i class="el-icon-aim"></i>
-        <template #title>聚合位置</template>
-      </el-menu-item>
-      <el-submenu index="3">
-        <template #title>
-          <i class="el-icon-document"></i>
-          <span>轨迹记录</span>
-        </template>
-        <el-menu-item-group>
-          <template #title>分组一</template>
-          <el-menu-item
-            v-for="car of cars"
-            :key="car.identificationCode"
-            :index="car.identificationCode"
-            @click="setPositions(car.position)"
-          >{{ car.identificationCode }}</el-menu-item>
-        </el-menu-item-group>
+          </el-submenu>-->
+        </el-submenu>
+        <el-menu-item index="2" @click="focusingOnTheMap()">
+          <i class="el-icon-aim"></i>
+          <template #title>聚合位置</template>
+        </el-menu-item>
+        <el-submenu index="3">
+          <template #title>
+            <i class="el-icon-document"></i>
+            <span>轨迹记录</span>
+          </template>
+          <el-menu-item-group>
+            <template #title>分组一</template>
+            <el-menu-item
+              v-for="car of cars"
+              :key="car.identificationCode"
+              :historys="Math.random() > 0.5"
+            ></el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
 
-        <el-menu-item index="1-3">选项3</el-menu-item>
-        <history></history>
-      </el-submenu>
-
-      <el-menu-item index="3">
-        <i class="el-icon-setting"></i>
-        <template #title>导航四</template>
-      </el-menu-item>
-    </el-menu>
+        <el-menu-item index="3">
+          <i class="el-icon-setting"></i>
+          <template #title>导航四</template>
+        </el-menu-item>
+      </el-menu>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -90,8 +95,11 @@ interface car {
 }
 export default defineComponent({
   // import引入的组件需要注入到对象中才能使用
-  components: { history },
-  props: { cars: Array as PropType<car[]> },
+  components: {},
+  props: {
+    cars: Array as PropType<car[]>,
+    historys: Array as PropType<car[]>
+  },
   data() {
     return {
       isCollapse: true,
@@ -134,11 +142,19 @@ export default defineComponent({
 <style >
 /* @import url("element-plus/lib/theme-chalk/index.css"); */
 .nav {
-  position: fixed;
+  position: absolute;
   z-index: 20;
+}
+.nav .el-scrollbar__wrap {
+  overflow-x: hidden !important;
 }
 el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
+  position: fixed;
+}
+.default-scrollbar {
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -48,6 +48,222 @@ export default defineComponent({
             lat: 23.107998,
             icar: null,
           },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
+        }, {
+          identificationCode: "粤A66666",
+          superiorDepartments: "警务处",
+          higherUnit: "广州巡逻",
+          state: "巡逻",
+          trackPoints: Array(500)
+            .fill(0)
+            .map((_, i) => {
+              return {
+                lng: 113.336251 - i * 0.00005,
+                lat: 23.107998 - i * 0.00005,
+              };
+            }),
+          position: {
+            lng: 113.336251,
+            lat: 23.107998,
+            icar: null,
+          },
         },
         {
           identificationCode: "粤A1236",
@@ -173,8 +389,7 @@ export default defineComponent({
           return true;
         },
       };
-      //@ts-ignore
-      car.position = new Proxy(car.position, handle);
+      (car.position as object) = new Proxy(car.position, handle);
     });
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
@@ -199,6 +414,6 @@ export default defineComponent({
   overflow: hidden;
   margin-top: 1vh;
   font-family: "微软雅黑";
-  position: fixed;
+  position: fixed !important;
 }
 </style>

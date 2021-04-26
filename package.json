@@ -8,6 +8,7 @@
     "vite-debug": "vite --debug"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "element-plus": "^1.0.2-beta.40",
     "vite-plugin-rewrite-all": "^0.1.2",
     "vue": "^3.0.5",

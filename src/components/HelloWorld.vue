@@ -1,11 +1,12 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="cars" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BMAP_HYBRID_MAP: string
+import { car } from "car"
 //@ts-ignore
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay.ts";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
@@ -23,24 +24,7 @@ export default defineComponent({
   },
   data() {
     //这里存放数据
-    return {
-      isToDisplayMapLS: false,
-      currentTrack: {
-        name: '',
-        history: [{
-          time: Number,
-          lng: Number,
-          lat: Number,
-        }]
-      },
-      map: {
-        setViewport: (_: Array<Object>) => { },
-        setCenter: (d: any[]) => { },
-        addOverlay: (_: any) => _
-      },
-
-      cars: [
-        {
+    let cars:car[]=[{
           identificationCode: "粤A66666",
           superiorDepartments: "警务处",
           higherUnit: "广州巡逻",
@@ -56,7 +40,7 @@ export default defineComponent({
           position: {
             lng: 113.336251,
             lat: 23.107998,
-            icar: null,
+            icar: { point: {} },
           },
         },
         {
@@ -64,13 +48,31 @@ export default defineComponent({
           superiorDepartments: "警务处",
           higherUnit: "广州巡逻",
           state: "待机",
+          trackPoints: [],
           position: {
             lng: 113.336251,
             lat: 23.107998,
             icar: { point: {} },
           },
-        },
-      ],
+        }
+      ]
+    return {
+      isToDisplayMapLS: false,
+      currentTrack: {
+        name: '',
+        history: [{
+          time: Number,
+          lng: Number,
+          lat: Number,
+        }]
+      },cars,
+      map: {
+        setViewport: (_: Array<Object>) => { },
+        setCenter: (d: any[]) => { },
+        addOverlay: (_: any) => _
+      },
+
+     
       currentRadius: 100,
       alarmRange: 150,
     };

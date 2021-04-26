@@ -4,31 +4,17 @@
 <el-menu-item index="1-3">选项3</el-menu-item>
 </el-menu-item-group>
 <el-submenu index="1-4">
- --></el-submenu><el-menu-item index="2" @click="focusingOnTheMap()"><i class="el-icon-aim"></i><template #title>聚合位置</template></el-menu-item><el-submenu index="3"><template #title><i class="el-icon-document"></i><span>轨迹记录</span></template><el-menu-item-group><template #title>分组一</template><template v-for="car of cars" :key="car.identificationCode"><el-menu-item v-if="car.trackPoints" @click="$emit('showHistoryCar', car.identificationCode)">{{ car.identificationCode }}</el-menu-item></template></el-menu-item-group></el-submenu><el-menu-item index="3"><i class="el-icon-setting"></i><template #title>导航四</template></el-menu-item></el-menu></el-scrollbar></div></template>
+ --></el-submenu><el-menu-item index="2" @click="focusingOnTheMap()"><i class="el-icon-aim"></i><template #title>聚合位置</template></el-menu-item><el-submenu index="3"><template #title><i class="el-icon-document"></i><span>轨迹记录</span></template><el-menu-item-group><template #title>分组一</template><template v-for="car of cars" :key="car.identificationCode"><el-menu-item v-if="car.trackPoints.length" @click="$emit('showHistoryCar', car.identificationCode)">{{ car.identificationCode }}</el-menu-item></template></el-menu-item-group></el-submenu><el-menu-item index="3"><i class="el-icon-setting"></i><template #title>导航四</template></el-menu-item></el-menu></el-scrollbar></div></template>
 
 <script lang="ts">
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》'
 import { defineComponent, PropType } from "vue";
 import history from "./history.vue";
-interface pos {
-  lng: number;
-  lat: number;
-  icar: {};
-}
-interface car {
-  identificationCode: "";
-  superiorDepartments: "";
-  higherUnit: "";
-  state: "";
-  trackPoints: [
-    {
-      lng: number;
-      lat: number;
-    }
-  ];
-  position: pos;
-}
+import { car,pos } from "car"
+
+
+
 export default defineComponent({
   // import引入的组件需要注入到对象中才能使用
   components: {},

@@ -1,17 +1,18 @@
+declare const BMap: any
+interface Point { lng: number, lat: number }
 //@ts-ignore
 export default class ComplexCustomOverlay extends BMap.Overlay {
-  private _point: any;
+  private _point: Point;
   private _text: string;
   private _overText: string;
-  //@ts-ignore
-  private _map!: BaiduMap;
+  private _map: any;
   private _div!: HTMLDivElement;
   private _span!: HTMLSpanElement;
   private _arrow!: HTMLDivElement;
   //@ts-ignore
-  constructor(point: Point, text: string, mouseoverText: string,) {
+  constructor(pointe: Point, text: string, mouseoverText: string,) {
     super()
-    this._point = point;
+    this._point = pointe;
     this._text = text;
     this._overText = mouseoverText;
   }

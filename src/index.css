@@ -6,3 +6,15 @@
   color: #2c3e50;
   margin: 0px;
 }
+.loading {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  top: 50%;
+  left: 50%;
+  margin: -18px 0 0 -18px;
+  background-image: url("@/assets/Loading.png");
+  background-size: 100%;
+  animation: rotate 1.4s linear infinite;
+}
+

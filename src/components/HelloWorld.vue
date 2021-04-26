@@ -1,10 +1,6 @@
 <!-- 地图展示 -->
 <template>
-  <div style="width: 99vw; height: 95vh">
-    <navgate :cars="cars" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')"></navgate>
-    <div id="allmap"></div>
-  </div>
-</template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="cars" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -17,12 +13,26 @@ import { debounce } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
 import { defineComponent } from "@vue/runtime-core";
+import { defineAsyncComponent } from "vue";
 export default defineComponent({
   //import引入的组件需要注入到对象中才能使用
-  components: { navgate },
+  components: {
+    navgate,
+    historicalRecord: defineAsyncComponent(() => import("@/components/historicalRecord.vue"),
+    ),
+  },
   data() {
     //这里存放数据
     return {
+      isToDisplayMapLS: false,
+      currentTrack: {
+        name: '',
+        history: [{
+          time: Number,
+          lng: Number,
+          lat: Number,
+        }]
+      },
       map: {
         setViewport: (_: Array<Object>) => { },
         setCenter: (d: any[]) => { },
@@ -31,222 +41,6 @@ export default defineComponent({
 
       cars: [
         {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
-          identificationCode: "粤A66666",
-          superiorDepartments: "警务处",
-          higherUnit: "广州巡逻",
-          state: "巡逻",
-          trackPoints: Array(500)
-            .fill(0)
-            .map((_, i) => {
-              return {
-                lng: 113.336251 - i * 0.00005,
-                lat: 23.107998 - i * 0.00005,
-              };
-            }),
-          position: {
-            lng: 113.336251,
-            lat: 23.107998,
-            icar: null,
-          },
-        }, {
           identificationCode: "粤A66666",
           superiorDepartments: "警务处",
           higherUnit: "广州巡逻",
@@ -287,20 +81,16 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    showHistoryCar(car: string) {
+      this.isToDisplayMapLS = !this.isToDisplayMapLS
+      this.currentTrack.name = car
+    },
     focusAll() {
       this.map.setViewport(this.cars.map((car) => car.position!.icar!.point));
     },
     setView(pos: any, define: string) {
       console.log(pos.car);
       this.map.setCenter(pos.icar.point);
-    },
-    hideTol() {
-      setTimeout(
-        () =>
-        ((document.querySelector(".BMap_noprint.anchorTR") as HTMLElement).style.display =
-          "none"),
-        200
-      );
     },
     initMap() {
       // 百度地图API功能
@@ -376,7 +166,6 @@ export default defineComponent({
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.hideTol();
     let draw = debounce((point) =>
       point.icar.setPosition(new BMap.Point(point.lng, point.lat)), 10,
     );
@@ -415,5 +204,6 @@ export default defineComponent({
   margin-top: 1vh;
   font-family: "微软雅黑";
   position: fixed !important;
+  top: 0rem;
 }
 </style>

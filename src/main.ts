@@ -19,7 +19,9 @@ import {
   ElMessage,
   ElMessageBox,
   ElNotification,
+  ElScrollbar,
 } from 'element-plus';
+//TODO #9 尝试优化ElScrollbar
 const plugins = [
   ElInfiniteScroll,
   ElLoading,
@@ -35,6 +37,7 @@ const plugins = [
     ElMenuItem,
     ElMenuItemGroup,
     ElSubmenu,
+    ElScrollbar,
   ],
   app = createApp(App);
   plugins.forEach((plugin) => {

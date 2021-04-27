@@ -14,7 +14,7 @@
     "typeRoots": ["./type", "@types"],
     "paths": {
       "@/*": ["./src/*"],
-      "@m/": ["./src/*"],
+      "@m/*": ["./src/module/*"],
       "@a/": ["./src/*"],
       "@lib/": ["./lib/*"],
       "type/": ["./type/*"],

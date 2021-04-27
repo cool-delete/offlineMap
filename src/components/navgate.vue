@@ -14,7 +14,6 @@ import history from "./history.vue";
 import { car,pos } from "car"
 
 
-
 export default defineComponent({
   // import引入的组件需要注入到对象中才能使用
   components: {},

@@ -1,48 +1,78 @@
-
+//TODO #10 优化UI关闭按钮
 <template>
-<el-table :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%"><el-table-column label="id" prop="id"></el-table-column><el-table-column label="车牌号" prop="car"></el-table-column><el-table-column label="开始" align="right"><template #default="dd"><i class="el-icon-time"></i><span>{{dd.row.timeStart}}</span></template></el-table-column><el-table-column label="结束" prop align="right"><template #header><el-input v-model="search" size="mini" placeholder="输入关键字搜索"></el-input></template><template #default="dd"><i class="el-icon-time"></i>{{dd.row.timeEnd}}</template></el-table-column></el-table></template>
+<div class="table"><el-table :data="tableData.filter(data => !search || data.car.toLowerCase().includes(search.toLowerCase()))" style="width: 100%" height="260"><el-table-column label="id" prop="id" width="35"></el-table-column><!-- <el-table-column label="车牌号" prop="car"></el-table-column> --><el-table-column label="开始" align="center"><template #default="dd"><i class="el-icon-time"></i><span>{{ dd.row.timeStart }}</span></template></el-table-column><el-table-column align="left" width="300"><template #header style="height:12px">结束<el-input v-model="search" size="mini" placeholder="输入关键字搜索"></el-input><span class="close" @click="$emit('close')" title="关闭窗口"></span></template><template #default="ee"><i class="el-icon-time"></i>{{ ee.row.timeEnd }}</template></el-table-column></el-table></div></template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/runtime-core";
-
+//
+import { defineComponent, onMounted, ref, reactive } from "vue";
+import { http } from "@/until/request";
+import { timeS } from "car";
 export default defineComponent({
- async setup(){
+  async setup() {
+    onMounted(() => (console.log('挂宅了')))
+    const ta: timeS[] = await (await http.get('timeS')).data.map((data: timeS) => ({ id: data.id + 1, car: data.car, timeStart: new Date(data.timeStart + 86400000).toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '.'), timeEnd: new Date(data.timeEnd + 86400000).toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '.') }))
+
+    console.log(ta);
 
 
 
- },
-  data() {
-    return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
-      search: ''
-    }
-  },
-  methods: {
-    handleEdit(index: string, row: HTMLTableRowElement) {
+    const handleEdit = function(index: string, row: HTMLTableRowElement) {
       console.log(index, row);
     },
-    handleDelete(index: string, row: HTMLTableRowElement) {
-      console.log(index, row);
+      handleDelete = function(index: string, row: HTMLTableRowElement) {
+        console.log(index, row);
+      }
+    const tableData = reactive<timeS[]>(ta), search = ref('')
+    return {
+      tableData,
+      handleEdit,
+      handleDelete,
+      search,
     }
-  },
+  }
 })
 </script>
 
 <style>
+.table {
+  width: 57vw;
+  max-height: 16vh;
+  z-index: 300;
+  top: 31vh;
+  position: absolute;
+  right: 33vw;
+}
+.close {
+  background: #f82121ad;
+  color: #000000;
+  border-radius: 12px;
+  line-height: 21px;
+  text-align: center;
+  height: 22px;
+  width: 22px;
+  right: 0px;
+  top: 0px;
+  position: absolute;
+}
+.close::before {
+  content: "\2716";
+}
+</style>
+<style>
+.el-input.el-input--mini {
+  width: 43%;
+  left: 7.3vw;
+}
+.default-scrollbar {
+  width: 100%;
+  height: 330px;
+}
+.el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+}
 </style>

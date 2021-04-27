@@ -19,8 +19,11 @@ import {
   ElLoading,
   ElMessage,
   ElMessageBox,
-  ElNotification,
+  ElTable,
+  ElTableColumn,
   ElScrollbar,
+  ElInput,
+  ElNotification,
 } from 'element-plus';
 //TODO #9 尝试优化ElScrollbar
 const plugins = [
@@ -38,6 +41,9 @@ const plugins = [
     ElMenuItem,
     ElMenuItemGroup,
     ElSubmenu,
+    ElTable,
+    ElTableColumn,
+    ElInput,
     ElScrollbar,
   ],
   app = createApp(App);

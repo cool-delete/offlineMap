@@ -1,23 +1,24 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><controlPlayback></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="trackShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BMAP_HYBRID_MAP: string
-import { car } from "car"
+import { car, history } from "car"
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
 import { debounce } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
-import { defineComponent } from "@vue/runtime-core";
-import { defineAsyncComponent } from "vue";
+import controlPlayback from "@/components/controlPlayback.vue";
+import { defineAsyncComponent,defineComponent } from "vue";
 export default defineComponent({
   //import引入的组件需要注入到对象中才能使用
   components: {
     navgate,
+    controlPlayback,
     historicalRecord: defineAsyncComponent(
       () => import("@/components/historicalRecord.vue"),
     ),
@@ -83,6 +84,10 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    trackShows(history: history[]) {
+      console.log(history);
+
+    },
     showHistoryCar(car: string) {
       this.isToDisplayMapLS = !this.isToDisplayMapLS
       this.currentTrack.name = car

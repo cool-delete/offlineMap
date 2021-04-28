@@ -6,10 +6,10 @@
       <div class="back" @click="handel">
         <i class="el-icon-d-arrow-left"></i>
       </div>
-      <div class="pause" @click="handel">
+      <div class="pause" @click="handel" :class="{ 'choose': choosed === 2 }">
         <i class="el-icon-video-pause"></i>
       </div>
-      <div class="play" @click="handel">
+      <div class="play" @click="handel" :class="{ 'choose': choosed === 3 }">
         <i class="el-icon-video-play"></i>
       </div>
       <div class="next" @click="handel">
@@ -21,45 +21,54 @@
 
 <script lang="ts">
 //
-import { defineComponent, onMounted, ref, reactive } from "vue";
-import { http } from "@/until/request";
-import { timeS, history as Ihistory } from "car";
-import { cloneDeep } from "lodash";
+import { history as Ihistory } from "car";
+import { defineComponent, onMounted, PropType, ref, } from "vue";
+
 export default defineComponent({
   props: {
-    history: {
-      type: {} as () => Ihistory[],
-      require: false
+    historylocu: {
+      type: Object as PropType<Ihistory[]>,
+      require: true
     }
   },
-  setup({ history }, context) {
-    const time = ref('2021.04.28 15:54:12')
+  setup({ historylocu }, context) {
+
+    onMounted(() => {
+      state
+    })
+
+    const time = ref('2021.04.28 15:54:12'), choosed = ref(0)
     // props.history
+    let t: NodeJS.Timeout, i = 0, state: HTMLDivElement;
     const handel = (evne: MouseEvent) => {
-      let t: NodeJS.Timeout, i = 0;
-      const type = (<HTMLDivElement>evne.currentTarget).className, o: Record<string, Function> = {
-        back: () => { context.emit('move', --i), clearInterval(t) },
-        pause: () => { clearInterval(t) },
+      !~i && ++i
+      state = <HTMLDivElement>evne.currentTarget
+      const type = state.className, o: Record<string, Function> = {
+        back: () => { refresh(--i), clearInterval(t); choosed.value = 2 },
+        pause: () => { clearInterval(t); choosed.value === 2 || --i; choosed.value = 2 },
         play: () => {
-          (() => {
-            t = setInterval(() => {
-              if (history?.length === i) return clearInterval(t)
-              let that = history![i++]
-              time.value = new Date(that.timeStart + 8 * 60 * 60 * 1000).toISOString().substr(0, 19).replace('T', ' ').replace(/-/g, '.')
-              context.emit('move', i)
-            }, 200)
-          })()
+          t = setInterval(() => {
+            refresh(i++)
+          }, 1000)
+            ; choosed.value = 3
         },
-        next: () => { context.emit('move', ++i), clearInterval(t) },
+        next: () => { refresh(++i), clearInterval(t); choosed.value = 2 },
+      }, refresh = (index: number): void => {
+        if (historylocu?.length === index) return clearInterval(t)
+        let that = historylocu![index]
+        time.value = new Date(that.time + 8 * 60 * 60 * 1000).toISOString().substr(0, 19).replace('T', ' ').replace(/-/g, '.')
+        context.emit('move', index)
       }
       o[type]()
     }
 
     return {
       time,
+      choosed,
       handel
     }
   }
+
 })
 </script>
 
@@ -89,5 +98,8 @@ export default defineComponent({
   align-content: space-between;
   justify-content: space-around;
   align-items: stretch;
+}
+.choose {
+  color: #924040;
 }
 </style>

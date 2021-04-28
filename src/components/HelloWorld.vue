@@ -1,6 +1,6 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><controlPlayback></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="trackShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><controlPlayback v-if=isControlPlayback :historylocu="history" @move="movePoints"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="trackShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -13,7 +13,7 @@ import { debounce } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
 import controlPlayback from "@/components/controlPlayback.vue";
-import { defineAsyncComponent,defineComponent } from "vue";
+import { defineAsyncComponent, defineComponent } from "vue";
 export default defineComponent({
   //import引入的组件需要注入到对象中才能使用
   components: {
@@ -56,9 +56,14 @@ export default defineComponent({
         icar: { point: {} },
       },
     }
-    ]
+    ],
+      history: history[]=[],
+      historyP:any={}
     return {
+      history,
+      historyP,
       isToDisplayMapLS: false,
+      isControlPlayback: false,
       currentTrack: {
         name: '',
         history: [{
@@ -69,7 +74,7 @@ export default defineComponent({
       }, cars,
       map: {
         setViewport: (_: Array<Object>) => { },
-        setCenter: (d: any[]) => { },
+        setCenter: (d: any) => { },
         addOverlay: (_: any) => _
       },
 
@@ -84,8 +89,19 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    movePoints(i:number) {
+      let that=this.history[i]
+      const {lng,lat}=that
+      this.historyP.lng=lng
+      this.historyP.lat=lat
+      // console.log(this.historyP);
+      
+      this.map.setCenter(this.historyP);
+     },
     trackShows(history: history[]) {
+      this.history = history
       console.log(history);
+      this.isControlPlayback = !this.isControlPlayback
 
     },
     showHistoryCar(car: string) {
@@ -105,6 +121,7 @@ export default defineComponent({
       const currentPoint = new BMap.Point(113.336251, 23.107998);
       map.centerAndZoom(currentPoint, 19); // 初始化地图,设置中心点坐标和地图级别
       //添加地图类型控件
+      this.historyP=new BMap.Point(113.336251, 23.107998)
       map.addControl(
         new (BMap as any).MapTypeControl({
           mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP],

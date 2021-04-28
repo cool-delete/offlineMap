@@ -1,6 +1,28 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)"></navgate><controlPlayback v-if=isControlPlayback :historylocu="history" @move="movePoints"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="trackShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+  <div style="width: 99vw; height: 95vh">
+    <navgate
+      :cars="(cars)"
+      @focusAll="focusAll()"
+      @setPositions="setView($event, 'setMapView')"
+      @showHistoryCar="showHistoryCar($event)"
+    ></navgate>
+    <controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints"></controlPlayback>
+    <Suspense v-if="isToDisplayMapLS">
+      <template #default>
+        <historicalRecord
+          @close="isToDisplayMapLS = !isToDisplayMapLS"
+          :car="currentTrack.name"
+          @showHistoryCar="trackShows($event)"
+        ></historicalRecord>
+      </template>
+      <template #fallback>
+        <div class="loading"></div>
+      </template>
+    </Suspense>
+    <div id="allmap"></div>
+  </div>
+</template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -9,7 +31,7 @@ declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BM
 import { car, history } from "car"
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
-import { debounce } from "lodash";
+import { debounce, cloneDeep } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
 import controlPlayback from "@/components/controlPlayback.vue";
@@ -57,11 +79,15 @@ export default defineComponent({
       },
     }
     ],
-      history: history[]=[],
-      historyP:any={}
+      history: history[] = [],
+      historyP: any = {},
+      historyCar: any = {},
+      historyPLine: any = {}
     return {
       history,
       historyP,
+      historyCar,
+      historyPLine,
       isToDisplayMapLS: false,
       isControlPlayback: false,
       currentTrack: {
@@ -89,20 +115,40 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
-    movePoints(i:number) {
-      let that=this.history[i]
-      const {lng,lat}=that
-      this.historyP.lng=lng
-      this.historyP.lat=lat
+    movePoints(i: number) {
+      let that = this.history[i]
+      const { lng, lat } = that
+      this.historyP.lng = lng
+      this.historyP.lat = lat
       // console.log(this.historyP);
-      
+      this.historyCar.setPosition(this.historyP)
       this.map.setCenter(this.historyP);
-     },
+    },
     trackShows(history: history[]) {
       this.history = history
       console.log(history);
       this.isControlPlayback = !this.isControlPlayback
-
+      const arrP = history.map(h => {
+        let p = cloneDeep<history>(this.historyP)
+        p.lng = h.lng
+        p.lat = h.lat
+        return p
+      })
+      const pl = new BMap.Polyline(arrP, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
+      let OneCar = new BMap.Marker(
+          arrP[0],
+          {
+            icon: new BMap.Icon(carICon, new BMap.Size(52, 26)),
+          }
+        );
+        let lebal = new BMap.Label(history[0].car, {
+          offset: new BMap.Size(10, -30),
+        });
+        OneCar.setLabel(lebal);
+      this.historyPLine=pl
+      this.historyCar=OneCar
+      this.map.addOverlay(pl)
+      this.map.addOverlay(OneCar)
     },
     showHistoryCar(car: string) {
       this.isToDisplayMapLS = !this.isToDisplayMapLS
@@ -121,7 +167,7 @@ export default defineComponent({
       const currentPoint = new BMap.Point(113.336251, 23.107998);
       map.centerAndZoom(currentPoint, 19); // 初始化地图,设置中心点坐标和地图级别
       //添加地图类型控件
-      this.historyP=new BMap.Point(113.336251, 23.107998)
+      this.historyP = new BMap.Point(113.336251, 23.107998)
       map.addControl(
         new (BMap as any).MapTypeControl({
           mapTypes: [BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP],

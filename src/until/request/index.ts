@@ -4,7 +4,6 @@ const dev = import.meta.env.VITE_dev
 const PREFIX = 'htp://', DEVSERVER = PREFIX + 'localhost', BUILDSERVER = PREFIX + 'e1dfceee.test.utools.club'
 
 let baseURL = `${dev && DEVSERVER || BUILDSERVER}`
-    console.log('当前环境是', baseURL);
 
 export const http = axios.create({
   baseURL,

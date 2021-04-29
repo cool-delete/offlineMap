@@ -7,7 +7,12 @@
       @setPositions="setView($event, 'setMapView')"
       @showHistoryCar="showHistoryCar($event)"
     ></navgate>
-    <controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints"></controlPlayback>
+    <controlPlayback
+      v-if="isControlPlayback"
+      :historylocu="history"
+      @move="movePoints"
+      @close="outView"
+    ></controlPlayback>
     <Suspense v-if="isToDisplayMapLS">
       <template #default>
         <historicalRecord
@@ -101,6 +106,7 @@ export default defineComponent({
       map: {
         setViewport: (_: Array<Object>) => { },
         setCenter: (d: any) => { },
+        removeOverlay: (d: any) => { },
         addOverlay: (_: any) => _
       },
 
@@ -115,6 +121,11 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    outView() {
+      this.map.removeOverlay(this.historyPLine)
+      this.map.removeOverlay(this.historyCar)
+      this.isControlPlayback = !this.isControlPlayback
+    },
     movePoints(i: number) {
       let that = this.history[i]
       const { lng, lat } = that
@@ -136,17 +147,17 @@ export default defineComponent({
       })
       const pl = new BMap.Polyline(arrP, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
       let OneCar = new BMap.Marker(
-          arrP[0],
-          {
-            icon: new BMap.Icon(carICon, new BMap.Size(52, 26)),
-          }
-        );
-        let lebal = new BMap.Label(history[0].car, {
-          offset: new BMap.Size(10, -30),
-        });
-        OneCar.setLabel(lebal);
-      this.historyPLine=pl
-      this.historyCar=OneCar
+        arrP[0],
+        {
+          icon: new BMap.Icon(carICon, new BMap.Size(52, 26)),
+        }
+      );
+      let lebal = new BMap.Label(history[0].car, {
+        offset: new BMap.Size(10, -30),
+      });
+      OneCar.setLabel(lebal);
+      this.historyPLine = pl
+      this.historyCar = OneCar
       this.map.addOverlay(pl)
       this.map.addOverlay(OneCar)
     },

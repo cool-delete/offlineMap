@@ -2,6 +2,7 @@
 <template>
   <div class="playMain">
     <div class="time">{{ time }}</div>
+    <span class="close" @click="$emit('close')"></span>
     <div class="control">
       <div class="back" @click="handel">
         <i class="el-icon-d-arrow-left"></i>
@@ -101,5 +102,18 @@ export default defineComponent({
 }
 .choose {
   color: #924040;
+}
+.playMain .close {
+  background: #f82121b8;
+  color: #000000;
+  border-radius: 17px;
+  line-height: 23px;
+  text-align: center;
+  height: 22px;
+  width: 22px;
+  left: 56vw;
+  top: 15px;
+  padding: 3px;
+  position: absolute;
 }
 </style>

@@ -20,6 +20,8 @@ import {
   ElMessage,
   ElMessageBox,
   ElTable,
+  ElTag,
+  ElButton,
   ElTableColumn,
   ElScrollbar,
   ElInput,
@@ -44,6 +46,8 @@ const plugins = [
     ElTable,
     ElTableColumn,
     ElInput,
+    ElTag,
+    ElButton,
     ElScrollbar,
   ],
   app = createApp(App);

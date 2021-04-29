@@ -6,6 +6,7 @@
       @focusAll="focusAll()"
       @setPositions="setView($event, 'setMapView')"
       @showHistoryCar="showHistoryCar($event)"
+      @tracking="onTrackingView($event,'')"
     ></navgate>
     <controlPlayback
       v-if="isControlPlayback"
@@ -107,6 +108,7 @@ export default defineComponent({
         setViewport: (_: Array<Object>) => { },
         setCenter: (d: any) => { },
         removeOverlay: (d: any) => { },
+        panTo: (d: any) => { },
         addOverlay: (_: any) => _
       },
 
@@ -121,6 +123,9 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    onTrackingView(pos: any, define: string) {
+      this.map.panTo(pos);
+    },
     outView() {
       this.map.removeOverlay(this.historyPLine)
       this.map.removeOverlay(this.historyCar)
@@ -170,7 +175,7 @@ export default defineComponent({
     },
     setView(pos: any, define: string) {
       console.log(pos.car);
-      this.map.setCenter(pos.icar.point);
+      this.map.panTo(pos.icar.point);
     },
     initMap() {
       // 百度地图API功能

@@ -6,7 +6,9 @@
       @focusAll="focusAll()"
       @setPositions="setView($event, 'setMapView')"
       @showHistoryCar="showHistoryCar($event)"
-      @tracking="onTrackingView($event,'')"
+      @tracking="onTrackingView($event, '')"
+      @startTracking="startTracking"
+      @outTracking="outTracking"
     ></navgate>
     <controlPlayback
       v-if="isControlPlayback"
@@ -19,7 +21,7 @@
         <historicalRecord
           @close="isToDisplayMapLS = !isToDisplayMapLS"
           :car="currentTrack.name"
-          @showHistoryCar="trackShows($event)"
+          @showHistoryCar="historyShows($event)"
         ></historicalRecord>
       </template>
       <template #fallback>
@@ -86,6 +88,8 @@ export default defineComponent({
     }
     ],
       history: history[] = [],
+      trackingLine: any = {},
+      trackingPath: any[] = [],
       historyP: any = {},
       historyCar: any = {},
       historyPLine: any = {}
@@ -93,6 +97,8 @@ export default defineComponent({
       history,
       historyP,
       historyCar,
+      trackingLine,
+      trackingPath,
       historyPLine,
       isToDisplayMapLS: false,
       isControlPlayback: false,
@@ -123,7 +129,16 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    outTracking() {
+      this.map.removeOverlay(this.trackingLine)
+    },
+    startTracking(p:any) {
+      this.trackingLine = new BMap.Polyline([p],{ strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
+      this.map.addOverlay(this.trackingLine)
+    },
     onTrackingView(pos: any, define: string) {
+      this.trackingPath.push(pos)
+      this.trackingLine.setPath(this.trackingPath)
       this.map.panTo(pos);
     },
     outView() {
@@ -140,7 +155,7 @@ export default defineComponent({
       this.historyCar.setPosition(this.historyP)
       this.map.setCenter(this.historyP);
     },
-    trackShows(history: history[]) {
+    historyShows(history: history[]) {
       this.history = history
       console.log(history);
       this.isControlPlayback = !this.isControlPlayback

@@ -111,6 +111,7 @@ export default defineComponent({
       outTracking = () => {
         outVc()
         isOutTracking.value = !isOutTracking.value
+        contxt.emit('outTracking')
       },
       tracking = (icar: pos) => {
           //TODO #11 设置节流
@@ -120,6 +121,7 @@ export default defineComponent({
           contxt.emit('tracking', n)
         })
         isOutTracking.value = !isOutTracking.value
+        contxt.emit('startTracking',maker.point)
       },
       focusingOnTheMap = () => {
         contxt.emit("focusAll");

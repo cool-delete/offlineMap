@@ -9,6 +9,7 @@
       @tracking="onTrackingView($event, '')"
       @startTracking="startTracking"
       @outTracking="outTracking"
+      @isVisionShift="isVisionShift=!isVisionShift"
     ></navgate>
     <controlPlayback
       v-if="isControlPlayback"
@@ -89,6 +90,7 @@ export default defineComponent({
     ],
       history: history[] = [],
       trackingLine: any = {},
+      planToBounds: any = {},
       trackingPath: any[] = [],
       historyP: any = {},
       historyCar: any = {},
@@ -97,10 +99,12 @@ export default defineComponent({
       history,
       historyP,
       historyCar,
+      planToBounds,
       trackingLine,
       trackingPath,
       historyPLine,
       isToDisplayMapLS: false,
+      isVisionShift: true,
       isControlPlayback: false,
       currentTrack: {
         name: '',
@@ -115,6 +119,9 @@ export default defineComponent({
         setCenter: (d: any) => { },
         removeOverlay: (d: any) => { },
         panTo: (d: any) => { },
+        getBounds: () => ({}),
+        addEventListener: (d: string, e:Function) => { },
+        removeEventListener: (d: string, e:Function) => { },
         addOverlay: (_: any) => _
       },
 
@@ -129,17 +136,48 @@ export default defineComponent({
   watch: {},
   //方法集合
   methods: {
+    testPoint(p: any): boolean {
+      return this.planToBounds.containsPoint(p)
+    },
+    setBounds(): void {
+      this.planToBounds = this.map.getBounds()
+      const getSouthWest = this.planToBounds.getCenter(),
+        getNorthEast = this.planToBounds.getCenter()
+      let { lng: swlng, lat: swlat } = this.planToBounds.getSouthWest() as { lng: number, lat: number }
+      let { lng: nelng, lat: nelat } = this.planToBounds.getNorthEast() as { lng: number, lat: number }
+      const zoom = 0.01, width = (nelng - swlng) * zoom,
+        height = (nelat - swlat) * zoom
+      swlng = swlng + width
+      swlat = swlat + height
+      nelng = nelng - width
+      nelat = nelat - height
+      getSouthWest.lng = swlng
+      getSouthWest.lat = swlat
+      getNorthEast.lng = nelng
+      getNorthEast.lat = nelat
+      this.planToBounds = new BMap.Bounds(getSouthWest, getNorthEast)
+    },
     outTracking() {
       this.map.removeOverlay(this.trackingLine)
+      this.trackingPath.length = 0
+      this.map.removeEventListener('moveend', this.setBounds
+      )
     },
-    startTracking(p:any) {
-      this.trackingLine = new BMap.Polyline([p],{ strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
+    startTracking(p: any) {
+      this.trackingLine = new BMap.Polyline([p], { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
       this.map.addOverlay(this.trackingLine)
+      this.setBounds()
+      this.map.addEventListener('moveend', this.setBounds
+      )
     },
     onTrackingView(pos: any, define: string) {
       this.trackingPath.push(pos)
       this.trackingLine.setPath(this.trackingPath)
-      this.map.panTo(pos);
+
+
+      if (!this.testPoint(pos)&&this.isVisionShift)
+        this.setBounds(), this.map.panTo(pos)
+
     },
     outView() {
       this.map.removeOverlay(this.historyPLine)

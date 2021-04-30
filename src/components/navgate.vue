@@ -144,10 +144,10 @@ export default defineComponent({
         outPath && outPath()
         maker = icar ? icar.icar : maker
         maker = reactive(maker)
-        outVc = watch(() => maker.point, (n) => {
+        outVc = watch(() => maker.point, n => {
           contxt.emit('tracking', n)
         })
-        outPath = watch(() => maker.point, (n) => {
+        outPath = watch(() => maker.point, n => {
           contxt.emit('path', n)
         })
         isOutTracking.value = true

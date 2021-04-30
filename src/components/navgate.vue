@@ -1,10 +1,93 @@
 <!--  -->
 <template>
-<div class="nav"><div class="control" v-if="isOutTracking"><el-button class="outTracking" v-if="isOutTracking" @click="outTracking" type="primary" round>退出追踪</el-button><el-switch v-if="isOutTracking" v-model="isVisionShift" active-text="视野移动" inactive-text="视野静止" @click="$emit('isVisionShift')"></el-switch></div><el-radio-group v-model="isCollapse" style="margin-bottom: 20px"><el-radio-button :label="true">收起</el-radio-button><el-radio-button :label="false">展开</el-radio-button></el-radio-group><el-scrollbar class="default-scrollbar" wrap-class="default-scrollbar__wrap" view-class="default-scrollbar__view"><el-menu class="el-menu-vertical-demo" default-active="1-4-1" @open="handleOpen" @close="handleClose" :collapse="isCollapse"><el-submenu index="1"><template #title><i class="el-icon-location"></i><span>导航一</span></template><el-menu-item-group><template #title>分组一</template><template #default="dd"><el-menu-item v-for="car of cars" :key="car.identificationCode" :index="car.identificationCode" @click="setPositions(car.position)">{{ car.identificationCode }}<span class="track" @click="tracking(car.position)">跟踪</span></el-menu-item></template></el-menu-item-group><!--<el-menu-item-group title="分组2">
+  <div class="nav">
+    <div class="control" v-if="isOutTracking">
+      <el-button
+        class="outTracking"
+        v-if="isOutTracking"
+        @click="outTracking"
+        type="primary"
+        round
+      >退出追踪</el-button>
+      <el-switch
+        v-if="isOutTracking"
+        v-model="isVisionShift"
+        active-text="视野移动"
+        inactive-text="视野静止"
+        @click="handleViewRemove"
+      ></el-switch>
+    </div>
+    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
+      <el-radio-button :label="true">收起</el-radio-button>
+      <el-radio-button :label="false">展开</el-radio-button>
+    </el-radio-group>
+    <el-scrollbar
+      class="default-scrollbar"
+      wrap-class="default-scrollbar__wrap"
+      view-class="default-scrollbar__view"
+    >
+      <el-menu
+        class="el-menu-vertical-demo"
+        default-active="1-4-1"
+        @open="handleOpen"
+        @close="handleClose"
+        :collapse="isCollapse"
+      >
+        <el-submenu index="1">
+          <template #title>
+            <i class="el-icon-location"></i>
+            <span>导航一</span>
+          </template>
+          <el-menu-item-group>
+            <template #title>分组一</template>
+            <template #default="dd">
+              <el-menu-item
+                v-for="car of cars"
+                :key="car.identificationCode"
+                :index="car.identificationCode"
+                @click="setPositions(car.position)"
+              >
+                {{ car.identificationCode }}
+                <span
+                  class="track"
+                  @click.stop="tracking(car.position)"
+                >跟踪</span>
+              </el-menu-item>
+            </template>
+          </el-menu-item-group>
+          <!--<el-menu-item-group title="分组2">
 <el-menu-item index="1-3">选项3</el-menu-item>
 </el-menu-item-group>
 <el-submenu index="1-4">
- --></el-submenu><el-menu-item index="2" @click="focusingOnTheMap()"><i class="el-icon-aim"></i><template #title>聚合位置</template></el-menu-item><el-submenu index="3"><template #title><i class="el-icon-document"></i><span>轨迹记录</span></template><el-menu-item-group><template #title>分组一</template><template v-for="car of cars" :key="car.identificationCode"><el-menu-item v-if="car.trackPoints.length" @click="$emit('showHistoryCar', car.identificationCode)">{{ car.identificationCode }}</el-menu-item></template></el-menu-item-group></el-submenu><el-menu-item index="3"><i class="el-icon-setting"></i><template #title>导航四</template></el-menu-item></el-menu></el-scrollbar></div></template>
+          -->
+        </el-submenu>
+        <el-menu-item index="2" @click="focusingOnTheMap()">
+          <i class="el-icon-aim"></i>
+          <template #title>聚合位置</template>
+        </el-menu-item>
+        <el-submenu index="3">
+          <template #title>
+            <i class="el-icon-document"></i>
+            <span>轨迹记录</span>
+          </template>
+          <el-menu-item-group>
+            <template #title>分组一</template>
+            <template v-for="car of cars" :key="car.identificationCode">
+              <el-menu-item
+                v-if="car.trackPoints.length"
+                @click="$emit('showHistoryCar', car.identificationCode)"
+              >{{ car.identificationCode }}</el-menu-item>
+            </template>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-menu-item index="3">
+          <i class="el-icon-setting"></i>
+          <template #title>导航四</template>
+        </el-menu-item>
+      </el-menu>
+    </el-scrollbar>
+  </div>
+</template>
 
 <script lang="ts">
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -35,24 +118,40 @@ export default defineComponent({
         console.log(key, keyPath);
       },
       setPositions = (pos: pos) => {
-        outVc()
+
         contxt.emit("setPositions", pos);
+        if (pos.icar === maker)
+          return
+
+        outVc && outVc()
+        isVisionShift.value = false
       },
       outTracking = () => {
         outVc()
+        outPath()
         isOutTracking.value = !isOutTracking.value
         contxt.emit('outTracking')
       },
-      tracking = (icar: pos) => {
+      handleViewRemove = () => {
+        // click方法里面访问v-modle的对象 已经被更改了 v-modle的优先级要比click高
+        console.log('isVisionShift', isVisionShift.value);
+        !isVisionShift.value && !(outVc()) || tracking()
+      },
+      tracking = (icar: pos | null = null) => {
         //TODO #11 设置节流
-        outVc()
-        maker = icar.icar
+
+        outVc && outVc()
+        outPath && outPath()
+        maker = icar ? icar.icar : maker
         maker = reactive(maker)
         outVc = watch(() => maker.point, (n) => {
           contxt.emit('tracking', n)
         })
-        isOutTracking.value = !isOutTracking.value
-        contxt.emit('startTracking', maker.point)
+        outPath = watch(() => maker.point, (n) => {
+          contxt.emit('path', n)
+        })
+        isOutTracking.value = true
+        icar && contxt.emit('startTracking', maker.point)
       },
       focusingOnTheMap = () => {
         contxt.emit("focusAll");
@@ -61,6 +160,7 @@ export default defineComponent({
       isOutTracking = ref(false),
       isVisionShift = ref(true)
       , outVc: Function
+      , outPath: Function
     return {
       isCollapse: true,
       isVisionShift,
@@ -68,6 +168,7 @@ export default defineComponent({
       handleOpen,
       outTracking,
       handleClose,
+      handleViewRemove,
       tracking,
       setPositions,
       focusingOnTheMap,
@@ -109,16 +210,16 @@ el-menu-vertical-demo:not(.el-menu--collapse) {
 
 .nav .control {
   position: absolute;
-    left: 5vw;
-    top: 8vh;
-    width: 23vh;
-    height: 13vh;
-    background-color: #ffffff;
-    padding: 8px;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: flex-start;
+  left: 5vw;
+  top: 8vh;
+  width: 23vh;
+  height: 13vh;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
 }
 </style>

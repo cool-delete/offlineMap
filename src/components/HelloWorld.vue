@@ -7,9 +7,9 @@
       @setPositions="setView($event, 'setMapView')"
       @showHistoryCar="showHistoryCar($event)"
       @tracking="onTrackingView($event, '')"
+      @path="onPathView($event, '')"
       @startTracking="startTracking"
       @outTracking="outTracking"
-      @isVisionShift="isVisionShift=!isVisionShift"
     ></navgate>
     <controlPlayback
       v-if="isControlPlayback"
@@ -104,7 +104,6 @@ export default defineComponent({
       trackingPath,
       historyPLine,
       isToDisplayMapLS: false,
-      isVisionShift: true,
       isControlPlayback: false,
       currentTrack: {
         name: '',
@@ -120,8 +119,8 @@ export default defineComponent({
         removeOverlay: (d: any) => { },
         panTo: (d: any) => { },
         getBounds: () => ({}),
-        addEventListener: (d: string, e:Function) => { },
-        removeEventListener: (d: string, e:Function) => { },
+        addEventListener: (d: string, e: Function) => { },
+        removeEventListener: (d: string, e: Function) => { },
         addOverlay: (_: any) => _
       },
 
@@ -145,7 +144,7 @@ export default defineComponent({
         getNorthEast = this.planToBounds.getCenter()
       let { lng: swlng, lat: swlat } = this.planToBounds.getSouthWest() as { lng: number, lat: number }
       let { lng: nelng, lat: nelat } = this.planToBounds.getNorthEast() as { lng: number, lat: number }
-      const zoom = 0.01, width = (nelng - swlng) * zoom,
+      const zoom = 0.03, width = (nelng - swlng) * zoom,
         height = (nelat - swlat) * zoom
       swlng = swlng + width
       swlat = swlat + height
@@ -171,13 +170,12 @@ export default defineComponent({
       )
     },
     onTrackingView(pos: any, define: string) {
+      if (!this.testPoint(pos))
+        this.setBounds(), this.map.panTo(pos)
+    },
+    onPathView(pos: any, define: string) {
       this.trackingPath.push(pos)
       this.trackingLine.setPath(this.trackingPath)
-
-
-      if (!this.testPoint(pos)&&this.isVisionShift)
-        this.setBounds(), this.map.panTo(pos)
-
     },
     outView() {
       this.map.removeOverlay(this.historyPLine)

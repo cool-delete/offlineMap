@@ -35,6 +35,7 @@ export default defineComponent({
         console.log(key, keyPath);
       },
       setPositions = (pos: pos) => {
+        outVc()
         contxt.emit("setPositions", pos);
       },
       outTracking = () => {
@@ -44,6 +45,7 @@ export default defineComponent({
       },
       tracking = (icar: pos) => {
         //TODO #11 设置节流
+        outVc()
         maker = icar.icar
         maker = reactive(maker)
         outVc = watch(() => maker.point, (n) => {

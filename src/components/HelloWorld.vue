@@ -194,6 +194,7 @@ export default defineComponent({
       this.map.setCenter(this.historyP);
     },
     historyShows(history: history[]) {
+      this.outView()
       this.history = history
       console.log(history);
       this.isControlPlayback = !this.isControlPlayback

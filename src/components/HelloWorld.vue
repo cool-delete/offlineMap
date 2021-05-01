@@ -195,7 +195,7 @@ export default defineComponent({
       this.outView()
       this.history = history
       console.log(history);
-      this.isControlPlayback = !this.isControlPlayback
+      this.isControlPlayback = true
       const arrP = history.map(h => {
         let p = cloneDeep<history>(this.historyP)
         p.lng = h.lng

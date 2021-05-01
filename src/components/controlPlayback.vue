@@ -2,7 +2,7 @@
 <template>
   <div class="playMain">
     <div class="time">{{ time }}</div>
-    <span class="close" @click="$emit('close')"></span>
+    <span class="close" @click="handleClosed"></span>
     <div class="control">
       <div class="back" @click="handel">
         <i class="el-icon-d-arrow-left"></i>
@@ -62,10 +62,15 @@ export default defineComponent({
       }
       o[type]()
     }
+      , handleClosed = () => {
+        clearInterval(t)
+        context.emit('close')
+      }
 
     return {
       time,
       choosed,
+      handleClosed,
       handel
     }
   }

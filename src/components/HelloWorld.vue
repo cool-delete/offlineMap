@@ -274,12 +274,12 @@ export default defineComponent({
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    let draw = debounce((point) =>
-      point.icar.setPosition(new BMap.Point(point.lng, point.lat)), 10,
+    let draw = debounce((point:car['position']) =>
+      point.icar.setPosition!(new BMap.Point(point.lng, point.lat)), 10,
     );
     this.cars.forEach((car) => {
       let handle = {
-        set: function(obj: object, prop: PropertyKey, value: any) {
+        set: function(obj :car['position'], prop: PropertyKey, value: any) {
           let res = Reflect.set(obj, prop, value);
           if (prop === "icar") return res;
           draw(obj);

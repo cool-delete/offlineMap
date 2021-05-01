@@ -10,7 +10,7 @@
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》'
 import { defineComponent, PropType, reactive, ref, watch, } from "vue";
-import { car, pos } from "car"
+import { car } from "car"
 
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
       handleClose = (key: string, keyPath: string) => {
         console.log(key, keyPath);
       },
-      setPositions = (pos: pos) => {
+      setPositions = (pos: car['position']) => {
 
         contxt.emit("setPositions", pos);
         if (pos.icar === maker)
@@ -48,14 +48,14 @@ export default defineComponent({
         outPath()
         isOutTracking.value = !isOutTracking.value
         maker.tracking = false
-        maker = null
+        maker = null as any
         contxt.emit('outTracking')
       },
       handleViewRemove = () => {
         // click方法里面访问v-modle的对象 已经被更改了 v-modle的优先级要比click高
         isVisionShift.value && tracking() || outVc()
       },
-      tracking = (icar: pos | null = null) => {
+      tracking = (icar: (car['position'] | null) = null) => {
         //TODO #11 设置节流
 
         if (icar && icar.icar.tracking) return
@@ -65,12 +65,12 @@ export default defineComponent({
         if (maker && !isOutTracking.value) return
         outVc && outVc()
         outPath && outPath()
-        isOutTracking.value = true
-        isVisionShift.value = true
-        icar && (icar.icar.tracking = true)
+        isOutTracking.value =
+          isVisionShift.value = true
 
 
         maker = icar ? icar.icar : maker
+        maker.tracking = true
         maker = reactive(maker)
         outVc = watch(() => maker.point, n => {
           contxt.emit('tracking', n)
@@ -84,7 +84,7 @@ export default defineComponent({
       focusingOnTheMap = () => {
         contxt.emit("focusAll");
       }
-    let maker: any,
+    let maker: car['position']['icar'],
       isOutTracking = ref(false),
       isVisionShift = ref(true)
       , outVc: Function

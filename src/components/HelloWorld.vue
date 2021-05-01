@@ -1,37 +1,6 @@
 <!-- 地图展示 -->
 <template>
-  <div style="width: 99vw; height: 95vh">
-    <navgate
-      :cars="(cars)"
-      @focusAll="focusAll()"
-      @setPositions="setView($event, 'setMapView')"
-      @showHistoryCar="showHistoryCar($event)"
-      @tracking="onTrackingView($event, '')"
-      @path="onPathView($event, '')"
-      @startTracking="startTracking"
-      @outTracking="outTracking"
-    ></navgate>
-    <controlPlayback
-      v-if="isControlPlayback"
-      :historylocu="history"
-      @move="movePoints"
-      @close="outView"
-    ></controlPlayback>
-    <Suspense v-if="isToDisplayMapLS">
-      <template #default>
-        <historicalRecord
-          @close="isToDisplayMapLS = !isToDisplayMapLS"
-          :car="currentTrack.name"
-          @showHistoryCar="historyShows($event)"
-        ></historicalRecord>
-      </template>
-      <template #fallback>
-        <div class="loading"></div>
-      </template>
-    </Suspense>
-    <div id="allmap"></div>
-  </div>
-</template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)" @tracking="onTrackingView($event, '')" @path="onPathView($event, '')" @startTracking="startTracking" @outTracking="outTracking"></navgate><controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints" @close="outView"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="historyShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -72,7 +41,7 @@ export default defineComponent({
       position: {
         lng: 113.336251,
         lat: 23.107998,
-        icar: { point: {},tracking:false },
+        icar: { point: {}, tracking: false },
       },
     },
     {
@@ -84,7 +53,7 @@ export default defineComponent({
       position: {
         lng: 113.336251,
         lat: 23.107998,
-        icar: { point: {} ,tracking:false },
+        icar: { point: {}, tracking: false },
       },
     }
     ],
@@ -163,6 +132,7 @@ export default defineComponent({
       )
     },
     startTracking(p: any) {
+      this.map.panTo(p)
       this.trackingLine = new BMap.Polyline([p], { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
       this.map.addOverlay(this.trackingLine)
       this.setBounds()

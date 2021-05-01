@@ -45,12 +45,13 @@
                 v-for="car of cars"
                 :key="car.identificationCode"
                 :index="car.identificationCode"
-                @click="setPositions(car.position)"
+                @click.self="setPositions(car.position)"
               >
                 {{ car.identificationCode }}
                 <span
                   class="track"
-                  @click.stop="tracking(car.position)"
+                  :class="{ tracking: car.position.icar.tracking }"
+                  @click.stop.native="tracking(car.position)"
                 >跟踪</span>
               </el-menu-item>
             </template>
@@ -130,18 +131,28 @@ export default defineComponent({
         outVc()
         outPath()
         isOutTracking.value = !isOutTracking.value
+        maker.tracking = false
+        maker = null
         contxt.emit('outTracking')
       },
       handleViewRemove = () => {
         // click方法里面访问v-modle的对象 已经被更改了 v-modle的优先级要比click高
-        console.log('isVisionShift', isVisionShift.value);
-        !isVisionShift.value && !(outVc()) || tracking()
+        isVisionShift.value && tracking() || outVc()
       },
       tracking = (icar: pos | null = null) => {
         //TODO #11 设置节流
 
+        if (icar && icar.icar.tracking) return
+        if (icar && maker && maker !== icar.icar) {
+          outTracking()
+        }
+        if (maker && !isOutTracking.value) return
         outVc && outVc()
         outPath && outPath()
+        isOutTracking.value = true
+        icar && (icar.icar.tracking = true)
+
+
         maker = icar ? icar.icar : maker
         maker = reactive(maker)
         outVc = watch(() => maker.point, n => {
@@ -150,8 +161,8 @@ export default defineComponent({
         outPath = watch(() => maker.point, n => {
           contxt.emit('path', n)
         })
-        isOutTracking.value = true
         icar && contxt.emit('startTracking', maker.point)
+        return true
       },
       focusingOnTheMap = () => {
         contxt.emit("focusAll");
@@ -206,6 +217,13 @@ el-menu-vertical-demo:not(.el-menu--collapse) {
   border-radius: 4px;
   box-sizing: border-box;
   white-space: nowrap;
+}
+.tracking {
+  background-color: #b6b6b6;
+  border-color: #f56c6c;
+  color: #f56c6c;
+  pointer-events: auto;
+  cursor: not-allowed;
 }
 
 .nav .control {

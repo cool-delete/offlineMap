@@ -72,7 +72,7 @@ export default defineComponent({
       position: {
         lng: 113.336251,
         lat: 23.107998,
-        icar: { point: {} },
+        icar: { point: {},tracking:false },
       },
     },
     {
@@ -84,7 +84,7 @@ export default defineComponent({
       position: {
         lng: 113.336251,
         lat: 23.107998,
-        icar: { point: {} },
+        icar: { point: {} ,tracking:false },
       },
     }
     ],

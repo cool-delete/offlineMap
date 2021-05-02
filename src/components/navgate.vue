@@ -62,16 +62,14 @@ export default defineComponent({
         if (icar && maker && maker !== icar.icar) {
           outTracking()
         }
-        if (maker && !isOutTracking.value) return
         outVc && outVc()
         outPath && outPath()
         isOutTracking.value =
           isVisionShift.value = true
 
 
-        maker = icar ? icar.icar : maker
+        maker = icar?.icar ?? maker
         maker.tracking = true
-        maker = reactive(maker)
         outVc = watch(() => maker.point, n => {
           contxt.emit('tracking', n)
         })

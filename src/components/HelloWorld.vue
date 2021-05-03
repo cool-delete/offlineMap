@@ -1,5 +1,4 @@
 <!-- 地图展示 -->
-TODO #13 多边形地图
 <template>
 <div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)" @tracking="onTrackingView($event, '')" @path="onPathView($event, '')" @startTracking="startTracking" @outTracking="outTracking"></navgate><controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints" @close="outView"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="historyShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 

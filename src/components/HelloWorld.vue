@@ -1,6 +1,6 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)" @tracking="onTrackingView($event, '')" @path="onPathView($event, '')" @startTracking="startTracking" @outTracking="outTracking"></navgate><controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints" @close="outView"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="historyShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)" @tracking="onTrackingView($event, '')" @path="onPathView($event, '')" @startTracking="startTracking" @outTracking="outTracking" @FenceSetting="outTracking"></navgate><controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints" @close="outView"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="historyShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
@@ -8,6 +8,7 @@
 declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BMAP_HYBRID_MAP: string
 import { car, history } from "car"
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay";
+import Fence from "@m/aFence/Fence";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
 import { debounce, cloneDeep } from "lodash";
 import carICon from "@/assets/car.png";
@@ -106,6 +107,9 @@ export default defineComponent({
   methods: {
     testPoint(p: any): boolean {
       return this.planToBounds.containsPoint(p)
+    },
+    FenceSetting(): void {
+      new Fence(this.map,{strokeColor:"blue"})
     },
     setBounds(): void {
       this.planToBounds = this.map.getBounds()
@@ -274,12 +278,12 @@ export default defineComponent({
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    let draw = debounce((point:car['position']) =>
+    let draw = debounce((point: car['position']) =>
       point.icar.setPosition!(new BMap.Point(point.lng, point.lat)), 10,
     );
     this.cars.forEach((car) => {
       let handle = {
-        set: function(obj :car['position'], prop: PropertyKey, value: any) {
+        set: function(obj: car['position'], prop: PropertyKey, value: any) {
           let res = Reflect.set(obj, prop, value);
           if (prop === "icar") return res;
           draw(obj);

@@ -4,7 +4,8 @@
 <el-menu-item index="1-3">选项3</el-menu-item>
 </el-menu-item-group>
 <el-submenu index="1-4">
- --></el-submenu><el-menu-item index="2" @click="focusingOnTheMap()"><i class="el-icon-aim"></i><template #title>聚合位置</template></el-menu-item><el-submenu index="3"><template #title><i class="el-icon-document"></i><span>轨迹记录</span></template><el-menu-item-group><template #title>分组一</template><template v-for="car of cars" :key="car.identificationCode"><el-menu-item v-if="car!.trackPoints!.length" @click="$emit('showHistoryCar', car.identificationCode)">{{ car.identificationCode }}</el-menu-item></template></el-menu-item-group></el-submenu><el-submenu index="4"><template #title><i class="el-icon-setting"></i><span>设置</span></template><el-menu-item @click="$emit('goFenceSetting')">电子围栏</el-menu-item><el-menu-item>车辆管理</el-menu-item></el-submenu></el-menu></el-scrollbar></div></template>
+ --></el-submenu><el-menu-item index="2" @click="focusingOnTheMap()"><i class="el-icon-aim"></i><template #title>聚合位置</template></el-menu-item><el-submenu index="3"><template #title><i class="el-icon-document"></i><span>轨迹记录</span></template><el-menu-item-group><template #title>分组一</template><template v-for="car of cars" :key="car.identificationCode"><el-menu-item v-if="car.trackPoints!.length" @click="$emit('showHistoryCar', car.identificationCode)">{{ car.identificationCode }}</el-menu-item></template></el-menu-item-group></el-submenu><el-submenu index="4"><template #title><i class="el-icon-setting"></i><span>设置</span></template><el-menu-item @click="$emit('goFenceSetting')">电子围栏</el-menu-item><el-menu-item>车辆管理</el-menu-item></el-submenu></el-menu></el-scrollbar></div>
+</template>
 
 <script lang="ts">
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）

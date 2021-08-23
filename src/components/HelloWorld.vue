@@ -248,7 +248,7 @@ export default defineComponent({
       // 百度地图API功能
       let map = (this.map = new BMap.Map("allmap")); // 创建Map实例
       const currentPoint = new BMap.Point(113.336251, 23.107998);
-      map.centerAndZoom(currentPoint, 19); // 初始化地图,设置中心点坐标和地图级别
+      map.centerAndZoom(currentPoint, 14); // 初始化地图,设置中心点坐标和地图级别
       //添加地图类型控件
       this.historyP = new BMap.Point(113.336251, 23.107998)
       map.addControl(
@@ -319,9 +319,9 @@ export default defineComponent({
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    let draw = debounce((point: car['position']) =>
-      point.icar.setPosition!(new BMap.Point(point.lng, point.lat)), 10,
-    );
+    let draw = (point: car['position']) =>
+      point.icar.setPosition!(new BMap.Point(point.lng, point.lat))
+    
     this.cars.forEach((car) => {
       let handle = {
         set: function (obj: car['position'], prop: PropertyKey, value: any) {

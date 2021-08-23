@@ -26,6 +26,7 @@ import {
   ElTableColumn,
   ElScrollbar,
   ElInput,
+  ElAutocomplete,
   ElNotification,
 } from 'element-plus';
 //TODO #9 尝试优化ElScrollbar
@@ -50,6 +51,7 @@ const plugins = [
     ElTag,
     ElSwitch,
     ElButton,
+    ElAutocomplete,
     ElScrollbar,
   ],
   app = createApp(App);

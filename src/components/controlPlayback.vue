@@ -35,7 +35,7 @@ export default defineComponent({
   setup({ historylocu }, context) {
 
     onMounted(() => {
-      state
+      // state
     })
 
     const time = ref('2021.04.28 15:54:12'), choosed = ref(0)

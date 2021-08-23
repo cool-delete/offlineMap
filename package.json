@@ -2,7 +2,7 @@
   "name": "offlinemap",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite ",
     "build": "vue-tsc --noEmit --skipLibCheck && vite build",
     "serve": "vite preview",
     "vite-debug": "vite --debug"

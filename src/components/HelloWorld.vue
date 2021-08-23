@@ -1,11 +1,45 @@
 <!-- 地图展示 -->
 <template>
-<div style="width: 99vw; height: 95vh"><navgate :cars="(cars)" @focusAll="focusAll()" @setPositions="setView($event, 'setMapView')" @showHistoryCar="showHistoryCar($event)" @tracking="onTrackingView($event, '')" @path="onPathView($event, '')" @startTracking="startTracking" @outTracking="outTracking" @FenceSetting="outTracking"></navgate><controlPlayback v-if="isControlPlayback" :historylocu="history" @move="movePoints" @close="outView"></controlPlayback><Suspense v-if="isToDisplayMapLS"><template #default><historicalRecord @close="isToDisplayMapLS = !isToDisplayMapLS" :car="currentTrack.name" @showHistoryCar="historyShows($event)"></historicalRecord></template><template #fallback><div class="loading"></div></template></Suspense><div id="allmap"></div></div></template>
+  <div style="width: 99vw; height: 95vh">
+    <navgate
+      :cars="(cars)"
+      @focusAll="focusAll()"
+      @setPositions="setView($event, 'setMapView')"
+      @showHistoryCar="showHistoryCar($event)"
+      @tracking="onTrackingView($event, '')"
+      @path="onPathView($event, '')"
+      @startTracking="startTracking"
+      @outTracking="outTracking"
+      @goFenceSetting="isFenceSetting = !isFenceSetting"
+    ></navgate>
+    <controlPlayback
+      v-if="isControlPlayback"
+      :historylocu="history"
+      @move="movePoints"
+      @close="outView"
+    ></controlPlayback>
+    <FenceSetting v-if="isFenceSetting" @close="outView" :map="map"></FenceSetting>
+    <Suspense v-if="isToDisplayMapLS">
+      <template #default>
+        <historicalRecord
+          @close="isToDisplayMapLS = !isToDisplayMapLS"
+          :car="currentTrack.name"
+          @showHistoryCar="historyShows($event)"
+        ></historicalRecord>
+      </template>
+      <template #fallback>
+        <div class="loading"></div>
+      </template>
+    </Suspense>
+    <div id="allmap"></div>
+  </div>
+</template>
 
 <script lang="ts" >
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string, BMAP_HYBRID_MAP: string
+declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string,
+  BMAP_HYBRID_MAP: string, BMAP_DRAWING_POLYGON: string, BMAP_DRAWING_CIRCLE: string
 import { car, history } from "car"
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay";
 import Fence from "@m/aFence/Fence";
@@ -13,13 +47,16 @@ import Fence from "@m/aFence/Fence";
 import { debounce, cloneDeep } from "lodash";
 import carICon from "@/assets/car.png";
 import navgate from "@/components/navgate.vue";
+import FenceSetting from "@/components/FenceSetting.vue";
 import controlPlayback from "@/components/controlPlayback.vue";
 import { defineAsyncComponent, defineComponent } from "vue";
+import { http } from "@/until/request";
 export default defineComponent({
   //import引入的组件需要注入到对象中才能使用
   components: {
     navgate,
     controlPlayback,
+    FenceSetting,
     historicalRecord: defineAsyncComponent(
       () => import("@/components/historicalRecord.vue"),
     ),
@@ -27,7 +64,7 @@ export default defineComponent({
   data() {
     //这里存放数据
     let cars: car[] = [{
-      identificationCode: "粤A66666",
+      identificationCode: "HK01",
       superiorDepartments: "警务处",
       higherUnit: "广州巡逻",
       state: "巡逻",
@@ -74,6 +111,7 @@ export default defineComponent({
       trackingPath,
       historyPLine,
       isToDisplayMapLS: false,
+      isFenceSetting: false,
       isControlPlayback: false,
       currentTrack: {
         name: '',
@@ -109,12 +147,12 @@ export default defineComponent({
       return this.planToBounds.containsPoint(p)
     },
     FenceSetting(): void {
-      new Fence(this.map,{strokeColor:"blue"})
+      new Fence(this.map, { strokeColor: "blue" }, BMAP_DRAWING_POLYGON)
     },
     setBounds(): void {
       this.planToBounds = this.map.getBounds()
-      const getSouthWest = this.planToBounds.getCenter(),
-        getNorthEast = this.planToBounds.getCenter()
+      let getNorthEast, getSouthWest
+      getNorthEast = getSouthWest = this.planToBounds.getCenter()
       let { lng: swlng, lat: swlat } = this.planToBounds.getSouthWest() as { lng: number, lat: number }
       let { lng: nelng, lat: nelat } = this.planToBounds.getNorthEast() as { lng: number, lat: number }
       const zoom = 0.03, width = (nelng - swlng) * zoom,
@@ -135,6 +173,8 @@ export default defineComponent({
       this.map.removeEventListener('moveend', this.setBounds
       )
     },
+
+
     startTracking(p: any) {
       this.map.panTo(p)
       this.trackingLine = new BMap.Polyline([p], { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
@@ -154,7 +194,8 @@ export default defineComponent({
     outView() {
       this.map.removeOverlay(this.historyPLine)
       this.map.removeOverlay(this.historyCar)
-      this.isControlPlayback = !this.isControlPlayback
+      this.isControlPlayback = false
+      this.isFenceSetting = false
     },
     movePoints(i: number) {
       let that = this.history[i]
@@ -235,27 +276,27 @@ export default defineComponent({
       );
       map.addOverlay(electronicFence);
       map.addOverlay(circle);
-      this.move(this.cars[0], this.cars[0].trackPoints)(1);
-      setTimeout(function() {
+      this.move(this.cars)();
+      setTimeout(function () {
         // layer.msg("鼠标滚轮缩放", { offset: "b" });
       }, 1000);
     },
-    move(car: any, trackPoints: {
-      lng: number
-      , lat: number
-    }[] = []) {
-      if (!trackPoints.length) return (_: any) => _;
-      return function() {
+    move(car: car[]) {
+      return function () {
         let t: NodeJS.Timeout,
           o = 0;
-        t = setInterval(() => {
-          if (o === trackPoints.length - 1) clearInterval(t);
-          const p = trackPoints[o];
-          car.position.lng = p.lng;
-          car.position.lat = p.lat;
-          o++;
-        }, 200);
-      };
+        car.forEach((c) => {
+          setInterval(async () => {
+            const p: car["position"] = (await http.post(`/db/query`, { fir_no: c.identificationCode }, {
+              headers: { 'content-type': 'application/json' }
+            }))["data"];
+            c.position.lng = p.lng;
+            c.position.lat = p.lat;
+            o++;
+          }, 10000);
+        })
+      }
+
     },
     initializesVehicleDisplay(cars: any[]) {
       // offset = 0;
@@ -283,7 +324,7 @@ export default defineComponent({
     );
     this.cars.forEach((car) => {
       let handle = {
-        set: function(obj: car['position'], prop: PropertyKey, value: any) {
+        set: function (obj: car['position'], prop: PropertyKey, value: any) {
           let res = Reflect.set(obj, prop, value);
           if (prop === "icar") return res;
           draw(obj);

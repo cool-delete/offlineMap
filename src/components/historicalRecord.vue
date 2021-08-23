@@ -67,21 +67,7 @@ export default defineComponent({
   position: absolute;
   right: 33vw;
 }
-.close {
-  background: #f82121ad;
-  color: #000000;
-  border-radius: 12px;
-  line-height: 21px;
-  text-align: center;
-  height: 22px;
-  width: 22px;
-  right: 0px;
-  top: 0px;
-  position: absolute;
-}
-.close::before {
-  content: "\2716";
-}
+
 </style>
 <style>
 .el-input.el-input--mini {

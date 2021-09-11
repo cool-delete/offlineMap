@@ -181,10 +181,10 @@ export default defineComponent({
         }
       }
     },
-    rollback(overlays:any): void {
+    rollback(overlays: any): void {
       this.mainLayer.getMap().addOverlay(this.mainLayer)
       this.outView()
-      this.map.removeOverlay(overlays)  
+      this.map.removeOverlay(overlays)
     },
     setBounds(): void {
       this.planToBounds = this.map.getBounds()
@@ -303,11 +303,11 @@ export default defineComponent({
         polyin: [{ lat: number, lng: number }]; // 城市边界 
 
       }
-const styleFence = {
-strokeColor: "blue",
-strokeWeight: 2,
-strokeOpacity: 0.4,
-};
+      const styleFence = {
+        strokeColor: "blue",
+        strokeWeight: 2,
+        strokeOpacity: 0.4,
+      };
       // const areaType: Record<string, Icity> = {
       //   "polyin": { name: "多边形", type: "polyin" },
       // }
@@ -322,7 +322,7 @@ strokeOpacity: 0.4,
 
           const po = fenceData.map(Ipoint)
           //@ts-ignore
-          this.mainLayer = drawPolnly(po, map,styleFence)
+          this.mainLayer = drawPolnly(po, map, styleFence)
           viewPoint.lng = this.mainLayer.getBounds().getCenter().lng
           viewPoint.lat = this.mainLayer.getBounds().getCenter().lat
         } else {

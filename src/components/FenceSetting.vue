@@ -107,7 +107,7 @@ export default defineComponent({
       const temp = drawPolnly(coordinates, props.map)
       //@ts-ignore
       props.map.addOverlay(temp);
-      overlays = temp
+      overlays.value = temp
       sendtPolnly = (temp.outPutPolnly);
       currentRegion.type = "city"
       completeSubmitt.value = true

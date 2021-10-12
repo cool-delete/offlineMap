@@ -5,7 +5,7 @@
       :cars="(cars)"
       @focusAll="focusAll()"
       @setPositions="setView($event, 'setMapView')"
-      @showHistoryCar="showHistoryCar($event)"
+      @showHistoryCar="showHistoryCar()"
       @tracking="onTrackingView($event, '')"
       @path="onPathView($event, '')"
       @startTracking="startTracking"
@@ -19,6 +19,11 @@
       @move="movePoints"
       @close="outView"
     ></controlPlayback>
+    <setPowerCom
+      v-if="true"
+
+
+    ></setPowerCom>
     <FenceSetting
       v-if="isFenceSetting"
       @close="rollback"
@@ -174,7 +179,7 @@ export default defineComponent({
         (!this.initMap()) && this.initializesVehicleDisplay(this.cars)
         this.outView()
         this.needToCompute = true
-        let e = setInterval(() => { }, 0)
+        let e = setInterval((_: any) => _, 0)
         for (let i = 0; e - i > 0; i++) {
           clearInterval(i)
 
@@ -270,9 +275,9 @@ export default defineComponent({
       this.map.addOverlay(pl)
       this.map.addOverlay(OneCar)
     },
-    showHistoryCar(car: string) {
+    showHistoryCar() {
       this.isToDisplayMapLS = !this.isToDisplayMapLS
-      this.currentTrack.name = car
+      // this.currentTrack.name = car
     },
     focusAll() {
       this.map.setViewport(this.cars.map((car) => car.position!.icar!.point));
@@ -345,7 +350,7 @@ export default defineComponent({
         );
         map.addOverlay(electronicFence);
         map.addOverlay(this.mainLayer);
-        this.move(this.cars)();
+
         setTimeout(function () {
           // layer.msg("鼠标滚轮缩放", { offset: "b" });
         }, 1000);
@@ -358,14 +363,22 @@ export default defineComponent({
           o = 0;
         car.forEach((c) => {
           setInterval(async () => {
-            const p: car["position"] = (await http.post(`/db/query`, { fir_no: c.identificationCode }, {
+            interface query {
+              code: number;
+              lng: number;
+              lat: number;
+            }
+            const p: query = (await http.post(`/db/query`, { fir_no: c.identificationCode }, {
               headers: { 'content-type': 'application/json' }
             }))["data"];
+            if (~p.code) {
+            c.position.code=p.code;
             c.position.lng = p.lng;
             c.position.lat = p.lat;
+            
             o++;
-          }, 10000);
-        })
+          };
+        }, 10000)})
         that.calcIsPolyIn(car)
       }
 
@@ -376,6 +389,7 @@ export default defineComponent({
         if (!this.needToCompute) return
         carsB.length = 0
         this.cars.forEach((c) => {
+          if (!~c.position.code!) return
           carsB.push({ id: c.identificationCode, lng: c.position.lng, lat: c.position.lat })
         })
         const worke = new WorkerIsPolyIn()
@@ -453,26 +467,46 @@ export default defineComponent({
     },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {
+  async created() {
+    this.cars.length = 0
+
+    await http.post<{ sets: { Fir_NO: string, Fir_Name: string, Com_No: string }[] }>("/db/getAll").then(({ data: { sets: cars } }) => {
+
+      cars.forEach((car) => {
+        let onecar: car = {
+          identificationCode: car.Fir_NO,  //车牌号
+          position: {
+            lng: 111.11,
+            lat: 222.22,
+            icar: { point: {}, tracking: false },
+            code: -1,
+          },
+          superiorDepartments: car.Com_No,
+          higherUnit: car.Fir_Name,
+          state: ""
+        }
+        let handle = {
+          set: function (obj: car['position'], prop: PropertyKey, value: any) {
+            let res = Reflect.set(obj, prop, value);
+            if (prop === "icar") return res;
+            draw(obj);
+            return true;
+          },
+        };
+        (onecar.position as object) = new Proxy(onecar.position, handle);
+        // onecar["identificationCode"] = car.Fir_NO
+        this.cars.push(onecar)
+      })
+      this.initializesVehicleDisplay(this.cars)
+    })
     let draw = (point: car['position']) =>
       point.icar.setPosition!(new BMap.Point(point.lng, point.lat))
+    this.move(this.cars)();
 
-    this.cars.forEach((car) => {
-      let handle = {
-        set: function (obj: car['position'], prop: PropertyKey, value: any) {
-          let res = Reflect.set(obj, prop, value);
-          if (prop === "icar") return res;
-          draw(obj);
-          return true;
-        },
-      };
-      (car.position as object) = new Proxy(car.position, handle);
-    });
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
     this.initMap();
-    this.initializesVehicleDisplay(this.cars);
   },
   beforeCreate() { }, //生命周期 - 创建之前
   beforeMount() { }, //生命周期 - 挂载之前

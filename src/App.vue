@@ -28,8 +28,10 @@
 <script lang="ts">
 import SelectTree from './until/SelectTree.vue'
 import HelloWorld from './components/HelloWorld.vue'
-import { onMounted, reactive, ref, } from "vue";
+import { computed, onMounted, reactive, ref, } from "vue";
 import { http } from "@/until/request";
+import { IControl,User } from "car";
+import { ctrolMap } from "@/until/cotrol";
 import { useCookie } from 'vue-cookie-next'
 // import { t } from 'element-plus/lib/locale';
 export default {
@@ -64,17 +66,8 @@ export default {
         }
         return LtStrValue;
       }
-      interface User {
-        USER_NO: string,
-        USER_NAME: string,
-        USER_PASS: string,
-        USER_Supper: true,
-        USER_MOBLE: string,
-        USER_Computer: string,
-        COM_NO: string,
-        DEP_NO: string
-      }
-      const user = (await http.post<{ sets: User[] }>("/db/login", { userName: userName.value, password: pasr(password.value) })).data.sets[0];
+    
+      const user = (await http.post<{ sets: User[] }>("/db/login", { userName: userName.value, password: pasr(password.value), comNo: comNo })).data.sets[0];
 
       if (!user) {
         userName.value = "";
@@ -82,8 +75,16 @@ export default {
         userH.value = "用户名或密码错误!"
         return
       };
-
+      user.filterPower = {}
+      user.power.forEach(item => {
+        const orNull = ctrolMap[item.run_no.trim()]
+        if (!orNull) return
+        user.filterPower[orNull] = orNull
+      })
       cookie.setCookie("user", user);
+
+      logined.value = true;
+
 
     }, inputToComplete = async () => {
       await http.get<{ sets: { com_name: string, com_no: string, com_parent: string }[] }>("/db/loginDepart", { params: { userName: userName.value } }).then(({ data: { sets } }) => {
@@ -91,8 +92,7 @@ export default {
         comList.value = sets;
       })
     }, c_n_change = (val: any) => {
-
-      c_n_select.value = val.com_name
+      comNo = val
     }, toTree = (list: { com_name: string, com_no: string, com_parent: string, children?: [] }[]) => {
       const tree: { com_name: string, com_no: string, com_parent: string }[] = [], map: { [key: string]: { com_name: string, com_no: string, com_parent: string } } = {};
       let node: { com_name: string, com_no: string, com_parent: string, children?: { com_name: string, com_no: string, com_parent: string, children?: [] }[] }
@@ -107,14 +107,17 @@ export default {
           tree.push(item);
       })
       return tree;
-    }, logined = ref(false), userName = ref(""), password = ref(""), com_name = ref(""), c_n_select = ref(""), comList = ref<{ com_name: string, com_no: string }[]>([]), userH = ref("请输入用户名");
+    }, logined = ref(!!cookie.getCookie("user")), userName = ref(""), password = ref(""), com_name = ref(""), c_n_select = ref(""), comList = ref<{ com_name: string, com_no: string }[]>([]), userH = ref("请输入用户名");
+
 
     onMounted(() => {
+      if (logined.value) return
       const span = document.querySelector('.el-input__icon.down');
       span!.parentElement!.parentElement!.style.transitionDelay = '0s'
       span!.parentElement!.parentElement!.classList.add('down')
       span!.parentElement!.classList.add('clors')
     })
+    let comNo = ''
     return {
       logined,
       login,

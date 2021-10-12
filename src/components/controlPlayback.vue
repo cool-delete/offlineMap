@@ -28,7 +28,7 @@ import { defineComponent, onMounted, PropType, ref, } from "vue";
 export default defineComponent({
   props: {
     historylocu: {
-      type: Object as PropType<Ihistory[]>,
+      type: Object as PropType<Ihistory>,
       require: true
     }
   },
@@ -40,7 +40,7 @@ export default defineComponent({
 
     const time = ref('2021.04.28 15:54:12'), choosed = ref(0)
     // props.history
-    let t: NodeJS.Timeout, i = 0, state: HTMLDivElement;
+    let t: number, i = 0, state: HTMLDivElement;
     const handel = (evne: MouseEvent) => {
       !~i && ++i
       state = <HTMLDivElement>evne.currentTarget
@@ -55,9 +55,10 @@ export default defineComponent({
         },
         next: () => { refresh(++i), clearInterval(t); choosed.value = 2 },
       }, refresh = (index: number): void => {
-        if (historylocu?.length === index) return clearInterval(t)
-        let that = historylocu![index]
-        time.value = new Date(that.time + 8 * 60 * 60 * 1000).toISOString().substr(0, 19).replace('T', ' ').replace(/-/g, '.')
+        if (historylocu?.points.length === index) return clearInterval(t)
+        let that = historylocu?.points![index]
+        // time.value = new Date(that!.time! + 8 * 60 * 60 * 1000).toISOString().substr(0, 19).replace('T', ' ').replace(/-/g, '.')
+        time.value =that!.time!.replace('T', ' ').replace(/-/g, '.')
         context.emit('move', index)
       }
       o[type]()

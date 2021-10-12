@@ -1,26 +1,26 @@
 import { build, defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import pluginRewriteAll from 'vite-plugin-rewrite-all';
-import styleImport from 'vite-plugin-style-import'
+import Components from 'unplugin-vue-components/vite'
+import ViteComponents, {
+
+  ElementPlusResolver,
+
+} from 'unplugin-vue-components/resolvers'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(),
-    styleImport({
-      libs: [{
-        libraryName: 'element-plus',
-        esModule: true,
-        ensureStyleFile: true,
-        resolveStyle: (name) => {
-          name = name.slice(3)
-          return `element-plus/lib/theme-chalk/${name}.css`;
-        },
-        resolveComponent: (name) => {
-          return `element-plus/lib/${name}`;
-        },
-      }]
-    })
+  Components({
+    resolvers: [
+
+      ElementPlusResolver(),
+
+    ]
+  })
   ],
+
+
   resolve: {
     alias: {
       '@lib': resolve(__dirname, 'lib'),
@@ -33,11 +33,18 @@ export default defineConfig({
   base: "./",
   // publicDir: "./lib",
   build: {
-    assetsDir:'./',
+    assetsDir: './',
     rollupOptions: {
-      inlineDynamicImports: true
+      inlineDynamicImports: true,
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
     },
-    
+
   },
   // optimizeDeps:{
   //   include:[]

@@ -4,6 +4,7 @@
     <div class="input-group" :class="userChecked && `userInit`">
       <el-select v-model="userNo" placeholder="选择设置的用户" @change="selectUser" class="el-option">
         <el-option
+          class="el-option"
           v-for="item in listUser"
           :key="item.user_no"
           :label="item.user_name"
@@ -14,10 +15,11 @@
         v-model="selectComNo"
         placeholder="选择单位"
         @change="selectCom"
-        class="el-option comInit"
+        class="el-option"
         v-show="userChecked"
       >
         <el-option
+          class="el-option"
           v-for="item in displayCom"
           :key="item.value"
           :label="item.label"
@@ -25,7 +27,7 @@
         ></el-option>
       </el-select>
     </div>
-    <div class="Comtransfer" v-if="userNo.value && !selectComNo">
+    <div class="Comtransfer" v-if="userNo.value && !selectComNo.value">
       <el-transfer
         v-model="hasComIndex"
         style="text-align: left; display: inline-block"
@@ -37,8 +39,7 @@
           hasChecked: '已选择: ${checked}/${total}',
         }"
         :data="allCom"
- 
-         @change="transferChange"
+        @change="transferChange"
       ></el-transfer>
     </div>
     <div class="Powtransfer" v-if="comCheck">
@@ -53,7 +54,7 @@
           hasChecked: '已选择: ${checked}/${total}',
         }"
         :data="allPow"
-         @change="transferChange"
+        @change="transferChange"
       ></el-transfer>
     </div>
     <el-button class="confirm" type="primary" round>确认</el-button>
@@ -118,14 +119,14 @@ export default defineComponent({
       displayCom = reactive(templateC.data.sets.map(i => ({ value: i.com_no, label: i.com_name }))),
 
 
-      selectComNo = ref(''),
+      selectComNo = ref<{ value: string }>({ value: '' }),
 
 
 
       selectUser = async function ({ value }: { value: string, label: string }) {
         hasComIndex.value.length = 0;
         user_name = value
-        selectComNo.value = ''
+        selectComNo.value.value = ''
         userChecked.value = true
         comCheck.value = false
         let { sets } = (await http.get<{ sets: com[] }>("/db/loginDepart", { params: { userName: value } })).data
@@ -143,46 +144,48 @@ export default defineComponent({
           if (index) hasPowerIndex.value.push(index.key)
         })
       },
-      transferChange = (va:any,ds:string,key:string[]) => {
-        const rows: string[][] = [], 
-        powerAdd = async (key: string[]) => {
-          key.forEach(i => {
-            const template = []
-            template.push(i, user_name, selectComNo.value)
-            rows.push(template)
-          })
-          const cul = ["run_no", "user_no", "com_no"], value = { sql: `insert into sys_power (${cul}) values ?`, arg: rows };
-          await http.post<{ sets: com[] }>('/db/notSafeSql', value)
-        }, 
-        userCAdd = async (key: string[]) => {
-          key.forEach(i => {
-            i=`'${i}'`,user_name=`'${user_name}'`
-            const template = []
-            template.push(i, user_name)
-            rows.push(template)
-          })
-          const cul = ["com_no", "user_no"], value = { sql: `insert into sys_userc (${cul}) values ${rows.map(i=>`(${i})`)} `, arg: rows };
-          await http.post<{ sets: com[] }>('/db/notSafeSql', value)
-        },
-        removePower = async (key: string[]) => {
-          key.forEach(i => {
-            const template = []
-            template.push(i, user_name, selectComNo.value)
-            rows.push(template)
-          })
-          const value = { sql: `delete from sys_power where  and user_no = '${user_name}' and com_no ='${selectComNo.value}' and run_no in (${rows.map(i=>`'${i}'`)})` };
-          await http.post<{ sets: com[] }>('/db/notSafeSql', value)
+      transferChange = (va: any, ds: string, key: string[]) => {
+        const rows: string[][] = [],
+          powerAdd = async (key: string[]) => {
+            key.forEach(i => {
+              i = `'${i}'`, user_name = `'${user_name}'`;
+              const com = `'${selectComNo.value.value}'`
+              const template = []
+              template.push(i, user_name, com)
+              rows.push(template)
+            })
+            const cul = ["run_no", "user_no", "com_no"], value = { sql: `insert into sys_power (${cul}) values ${rows.map(i => `(${i})`)} `, arg: rows };
+            await http.post<{ sets: com[] }>('/db/notSafeSql', value)
+          },
+          userCAdd = async (key: string[]) => {
+            key.forEach(i => {
+              i = `'${i}'`, user_name = `'${user_name}'`
+              const template = []
+              template.push(i, user_name)
+              rows.push(template)
+            })
+            const cul = ["com_no", "user_no"], value = { sql: `insert into sys_userc (${cul}) values ${rows.map(i => `(${i})`)} `, arg: rows };
+            await http.post<{ sets: com[] }>('/db/notSafeSql', value)
+          },
+          removePower = async (key: string[]) => {
+            key.forEach(i => {
+              const template = []
+              template.push(i, user_name, selectComNo.value.value)
+              rows.push(template)
+            })
+            const value = { sql: `delete from sys_power where  and user_no = '${user_name}' and com_no ='${selectComNo.value}' and run_no in (${rows.map(i => `'${i}'`)})` };
+            await http.post<{ sets: com[] }>('/db/notSafeSql', value)
 
-        },
-        removeUserC = async (key: string[]) => {
-          key.forEach(i => {
-            const template = []
-            template.push(  i)
-            rows.push(template)
-          })
-          const cul = ["com_no", "user_no"], value = { sql: `delete from sys_userc where user_no = '${user_name}' and com_no in (${rows.map(it=>`'${it[0]}'`)}) `, arg: rows };
-          await http.post<{ sets: com[] }>('/db/notSafeSql', value)
-        }
+          },
+          removeUserC = async (key: string[]) => {
+            key.forEach(i => {
+              const template = []
+              template.push(i)
+              rows.push(template)
+            })
+            const cul = ["com_no", "user_no"], value = { sql: `delete from sys_userc where user_no = '${user_name}' and com_no in (${rows.map(it => `'${it[0]}'`)}) `, arg: rows };
+            await http.post<{ sets: com[] }>('/db/notSafeSql', value)
+          }
         if (ds === 'right') {
           if (hasPowerIndex.value.length) {
             powerAdd(key)
@@ -255,7 +258,7 @@ export default defineComponent({
   transition-duration: 0.3s;
 }
 .el-option {
-  width: 10vw;
+  width: 10vw !important;
 }
 .userInit {
   top: 3vh;
@@ -263,13 +266,13 @@ export default defineComponent({
   transform: scale(1);
 }
 .Powtransfer {
-  position: absolute;
-  left: 6vw;
-  top: 9vh;
+    position: absolute;
+    left: 6.5vw;
+    top: 9vh;
 }
 .Comtransfer {
   position: absolute;
-  left: 6vw;
+  left: 6.5vw;
   top: 7vh;
 }
 .confirm {
@@ -283,15 +286,8 @@ export default defineComponent({
 }
 </style>
 <style>
-TODO.el-input__inner.el-range-editor.el-range-editor--small.rangTime {
-  width: 9vw;
-  height: 11vh;
-  display: grid;
-  /* margin-right: 1px; */
-  justify-items: center;
-  align-items: center;
-  position: relative;
-  left: 35px;
+.el-popper.el-select__popper.is-light.is-pure {
+  width: 9.9vw;
 }
 .el-input__inner.el-range-editor.el-range-editor--small.rangTime {
   position: relative;

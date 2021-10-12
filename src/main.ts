@@ -6,7 +6,8 @@ import BMap from '..@lib/map3.0.js?url'
 import router from './router/index'; //引入vue-router
 import request from '@/until/request';
 // import 'element-plus/lib/theme-chalk/base.css'
-import 'element-plus/lib/theme-chalk/index.css'
+// import 'element-plus/lib/theme-chalk/index.css'
+import { VueCookieNext as VueCookies } from 'vue-cookie-next'
 import {
   ElRadio,
   ElRadioButton,
@@ -28,6 +29,12 @@ import {
   ElInput,
   ElAutocomplete,
   ElNotification,
+  ElSelect,
+  ElTree,
+  ElOption,
+  ElDatePicker,
+  ElTransfer,
+  
 } from 'element-plus';
 //TODO #9 尝试优化ElScrollbar
 const plugins = [
@@ -51,19 +58,29 @@ const plugins = [
     ElTag,
     ElSwitch,
     ElButton,
+    ElSelect,
+    ElOption,
+    ElTransfer,
+    ElDatePicker,
     ElAutocomplete,
+    ElTree,
     ElScrollbar,
   ],
   app = createApp(App);
-  plugins.forEach((plugin) => {
+plugins.forEach((plugin) => {
   app.use(plugin)
 })
+app.use(VueCookies);
+VueCookies.config({
+  expire: "0",
+  secure: "",
+});
 app.config.globalProperties.$ELEMENT = {
   size: 'small', zIndex: 3000
 }
 components.forEach(component => {
-  console.log('组件',component.name);
-  
+  console.log('组件', component.name);
+
   app.component(component.name, component)
 })
 app.use(router).use(request) // 挂载到app上

@@ -14,6 +14,7 @@ export const http = axios.create({
 })
 export default {
   http,
+  baseURL,
   install(app: App) {
     app.config.globalProperties.$http = http
   }

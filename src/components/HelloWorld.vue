@@ -11,6 +11,8 @@
       @startTracking="startTracking"
       @outTracking="outTracking"
       @goFenceSetting="isFenceSetting = !isFenceSetting"
+      @SettingPow="showedPower = !showedPower"
+      @notify="notify($event)"
       ref="navgate"
     ></navgate>
     <controlPlayback
@@ -19,22 +21,18 @@
       @move="movePoints"
       @close="outView"
     ></controlPlayback>
-    <setPowerCom
-      v-if="true"
-
-
-    ></setPowerCom>
-    <FenceSetting
-      v-if="isFenceSetting"
-      @close="rollback"
-      :map="map"
-      @resetArea="resetArea"
-      @forceUpdate="resetArea('u');"
-      ref="FenceSetting"
-    ></FenceSetting>
-    <Suspense v-if="isToDisplayMapLS">
+    <Suspense>
+      <template #default>
+        <setPowerCom v-if="showedPower" @close="showedPower = !showedPower"></setPowerCom>
+      </template>
+      <template #fallback>
+        <div class="loading"></div>
+      </template>
+    </Suspense>
+    <Suspense>
       <template #default>
         <historicalRecord
+          v-if="isToDisplayMapLS"
           @close="isToDisplayMapLS = !isToDisplayMapLS"
           :car="currentTrack.name"
           @showHistoryCar="historyShows($event)"
@@ -53,7 +51,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 declare const BMap: any, BMAP_NORMAL_MAP: string, BMAP_SATELLITE_MAP: string,
   BMAP_HYBRID_MAP: string, BMAP_DRAWING_POLYGON: string, BMAP_DRAWING_CIRCLE: string
-import { car, history } from "car"
+import { car, history, User } from "car"
 import ComplexCustomOverlay from "@m/ComplexCustomOverlay";
 import Fence from "@m/aFence/Fence";
 // import ComplexCustomOverlay from "../module/ComplexCustomOverlay";
@@ -64,6 +62,7 @@ import request from '@/until/request';
 import navgate from "@/components/navgate.vue";
 import FenceSetting, { drawPolnly } from "@/components/FenceSetting.vue";
 import controlPlayback from "@/components/controlPlayback.vue";
+import setPowerCom from "@/components/setPowerCom.vue";
 import { defineAsyncComponent, defineComponent, ref } from "vue";
 import { http } from "@/until/request";
 import { t } from "element-plus/lib/locale";
@@ -73,9 +72,11 @@ export default defineComponent({
     navgate,
     controlPlayback,
     FenceSetting,
+    setPowerCom,
     historicalRecord: defineAsyncComponent(
       () => import("@/components/historicalRecord.vue"),
     ),
+
   },
   data() {
     //这里存放数据
@@ -109,7 +110,8 @@ export default defineComponent({
       },
     }
     ],
-      history: history[] = [],
+      history = <history>{
+      },
       trackingLine: any = {},
       planToBounds: any = {},
       trackingPath: any[] = [],
@@ -118,11 +120,11 @@ export default defineComponent({
       historyCar: any = {},
       historyPLine: any = {},
       needToCompute = true,
-      navgate = ref<HTMLElement>(),
-      FenceSetting = ref<HTMLElement>()
+      navgate = ref<HTMLElement>()
+
     return {
       navgate,
-      FenceSetting,
+
       history,
       historyP,
       historyCar,
@@ -134,6 +136,7 @@ export default defineComponent({
       isToDisplayMapLS: false,
       isFenceSetting: false,
       isControlPlayback: false,
+      showedPower: false,
       currentTrack: {
         name: '',
         history: [{
@@ -179,11 +182,11 @@ export default defineComponent({
         (!this.initMap()) && this.initializesVehicleDisplay(this.cars)
         this.outView()
         this.needToCompute = true
-        let e = setInterval((_: any) => _, 0)
-        for (let i = 0; e - i > 0; i++) {
-          clearInterval(i)
+        // let e = setInterval((_: any) => _, 0)
+        // for (let i = 0; e - i > 0; i++) {
+        //   clearInterval(i)
 
-        }
+        // }
       }
     },
     rollback(overlays: any): void {
@@ -240,7 +243,7 @@ export default defineComponent({
       this.isFenceSetting = false
     },
     movePoints(i: number) {
-      let that = this.history[i]
+      let that = this.history.points![i]
       const { lng, lat } = that
       this.historyP.lng = lng
       this.historyP.lat = lat
@@ -248,13 +251,16 @@ export default defineComponent({
       this.historyCar.setPosition(this.historyP)
       this.map.setCenter(this.historyP);
     },
-    historyShows(history: history[]) {
+    historyShows(history: history) {
       this.outView()
       this.history = history
       console.log(history);
       this.isControlPlayback = true
-      const arrP = history.map(h => {
-        let p = cloneDeep<history>(this.historyP)
+      const arrP = history.points.map(h => {
+
+        type ps = history["points"] extends (infer U)[] ? U : never
+
+        let p: ps = cloneDeep(this.historyP)
         p.lng = h.lng
         p.lat = h.lat
         return p
@@ -262,11 +268,12 @@ export default defineComponent({
       const pl = new BMap.Polyline(arrP, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 })
       let OneCar = new BMap.Marker(
         arrP[0],
+
         {
           icon: new BMap.Icon(carICon, new BMap.Size(52, 26)),
         }
       );
-      let lebal = new BMap.Label(history[0].car, {
+      let lebal = new BMap.Label(history.Fir_Name, {
         offset: new BMap.Size(10, -30),
       });
       OneCar.setLabel(lebal);
@@ -372,13 +379,14 @@ export default defineComponent({
               headers: { 'content-type': 'application/json' }
             }))["data"];
             if (~p.code) {
-            c.position.code=p.code;
-            c.position.lng = p.lng;
-            c.position.lat = p.lat;
-            
-            o++;
-          };
-        }, 10000)})
+              c.position.code = p.code;
+              c.position.lng = p.lng;
+              c.position.lat = p.lat;
+
+              o++;
+            };
+          }, 10000)
+        })
         that.calcIsPolyIn(car)
       }
 
@@ -446,6 +454,20 @@ export default defineComponent({
 
 
       // 
+    },
+    notify(notif: string) {
+      let notifyCreat = Promise.resolve()
+      // @ts-ignore 
+      notifyCreat.then(this.$nextTick()).then(() =>
+        // @ts-ignore  
+        this.$notify({
+          title: '警报',
+          // duration: 0,
+          dangerouslyUseHTMLString: true,
+          message: `<i class="el-notification__icon el-icon-error mynotify"></i><span>${notif}</span>
+        `
+        }))
+
     },
     initializesVehicleDisplay(cars: any[]) {
       // offset = 0;

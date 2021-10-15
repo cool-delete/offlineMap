@@ -30,7 +30,7 @@ import SelectTree from './until/SelectTree.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import { computed, onMounted, reactive, ref, } from "vue";
 import { http } from "@/until/request";
-import { IControl,User } from "car";
+import { IControl, User } from "car";
 import { ctrolMap } from "@/until/cotrol";
 import { useCookie } from 'vue-cookie-next'
 // import { t } from 'element-plus/lib/locale';
@@ -66,7 +66,7 @@ export default {
         }
         return LtStrValue;
       }
-    
+
       const user = (await http.post<{ sets: User[] }>("/db/login", { userName: userName.value, password: pasr(password.value), comNo: comNo })).data.sets[0];
 
       if (!user) {
@@ -140,16 +140,12 @@ export default {
   position: relative;
 }
 
-.select-tree {
-  height: auto;
-  max-height: 200px;
-  overflow-y: auto;
-  background-color: white;
-  padding: 0;
-}
+
 span.el-input__suffix.down {
-  top: 111px;
-  position: fixed;
+  top: 0.7vh;
+  position: absolute;
+  right: 1.1vw;
+  height: 0;
 }
 .clors {
   background-color: #01d0ff;

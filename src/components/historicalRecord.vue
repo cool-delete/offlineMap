@@ -52,13 +52,11 @@
 //
 import { defineComponent, onMounted, ref, reactive, getCurrentInstance, computed, defineExpose } from "vue";
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-import { ElConfigProvider } from 'element-plus'
+
 import { history, po } from "car";
 import { http } from "@/until/request";
 export default defineComponent({
-   components: {
-    [ElConfigProvider.name]: ElConfigProvider,
-  },
+
   async setup(props, context) {
     // @ts-ignore
     interface fire { Fir_NO: string, Fir_Name: string, Com_No: string }

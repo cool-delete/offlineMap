@@ -1,7 +1,7 @@
 import axios from "axios";
 import { App } from "vue";
 const dev = import.meta.env.VITE_dev
-const PREFIX = 'http://', DEVSERVER = PREFIX + 'localhost:34000', BUILDSERVER = PREFIX + 'cool-delete.dynv6.net:34000'
+const PREFIX = 'http://', DEVSERVER = PREFIX + 'localhost:34000', BUILDSERVER = PREFIX + 'localhost:34000'
 
 let baseURL = `${dev && DEVSERVER || BUILDSERVER}`
 

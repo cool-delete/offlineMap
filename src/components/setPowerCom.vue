@@ -57,7 +57,7 @@
         @change="transferChange"
       ></el-transfer>
     </div>
-    <el-button class="confirm" type="primary" round>确认</el-button>
+    <el-button class="confirm" type="primary" round @click="$emit('close')" >确认</el-button>
     <!-- <i class="el-icon-plus"></i> -->
     <!-- <el-table-column label="id" prop="id" width="35"></el-table-column>
        <el-table-column label="车牌号" prop="car"></el-table-column> 
@@ -84,7 +84,7 @@
 
 <script lang="ts">
 //
-import { defineComponent, onMounted, ref, reactive, getCurrentInstance, computed, defineExpose } from "vue";
+import { defineComponent, onMounted, ref, reactive, getCurrentInstance, computed, defineExpose, onUnmounted } from "vue";
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 import { history, po, User, com } from "car";
 import { http } from "@/until/request";
@@ -96,7 +96,11 @@ export default defineComponent({
     SelectTree
   },
   async setup(props, context) {
-    // @ts-ignore
+
+    onUnmounted(() => document.querySelector(".el-popper.el-select__popper.is-light.is-pure")?.classList.remove("OnTransfer")
+
+    )
+
     interface fire { Fir_NO: string, Fir_Name: string, Com_No: string }
     interface fireP extends fire { points: po[] }
     type keyType = keyof typeof ctrolMap_key;
@@ -124,6 +128,7 @@ export default defineComponent({
 
 
       selectUser = async function ({ value }: { value: string, label: string }) {
+        document.querySelectorAll(`.el-select__popper.el-popper.is-light.is-pure`).forEach(i => i.classList.add("OnTransfer"))
         hasComIndex.value.length = 0;
         user_name = value
         selectComNo.value.value = ''
@@ -147,8 +152,9 @@ export default defineComponent({
       transferChange = (va: any, ds: string, key: string[]) => {
         const rows: string[][] = [],
           powerAdd = async (key: string[]) => {
+            user_name = `'${user_name}'`
             key.forEach(i => {
-              i = `'${i}'`, user_name = `'${user_name}'`;
+              i = `'${i}'`
               const com = `'${selectComNo.value.value}'`
               const template = []
               template.push(i, user_name, com)
@@ -158,8 +164,9 @@ export default defineComponent({
             await http.post<{ sets: com[] }>('/db/notSafeSql', value)
           },
           userCAdd = async (key: string[]) => {
+            user_name = `'${user_name}'`
             key.forEach(i => {
-              i = `'${i}'`, user_name = `'${user_name}'`
+              i = `'${i}'`
               const template = []
               template.push(i, user_name)
               rows.push(template)
@@ -208,6 +215,8 @@ export default defineComponent({
 
 
     let user_name = '', mainDate: fireP
+
+
 
     return {
 
@@ -258,7 +267,7 @@ export default defineComponent({
   transition-duration: 0.3s;
 }
 .el-option {
-  width: 10vw !important;
+    width: 9.8vw;
 }
 .userInit {
   top: 3vh;
@@ -266,9 +275,9 @@ export default defineComponent({
   transform: scale(1);
 }
 .Powtransfer {
-    position: absolute;
-    left: 6.5vw;
-    top: 9vh;
+  position: absolute;
+  left: 6.5vw;
+  top: 9vh;
 }
 .Comtransfer {
   position: absolute;
@@ -286,22 +295,14 @@ export default defineComponent({
 }
 </style>
 <style>
-.el-popper.el-select__popper.is-light.is-pure {
-  width: 9.9vw;
-}
-.el-input__inner.el-range-editor.el-range-editor--small.rangTime {
-  position: relative;
-  left: 0vw;
-  top: 7vh;
-}
 .el-picker__popper.el-popper[role="tooltip"] {
   transform: scale(0.6);
   top: 19vh !important;
 }
-.el-input.el-input--mini {
-  width: 43%;
-  left: 7.3vw;
+.el-select__popper.el-popper[aria-hidden="false"].OnTransfer {
+  width: 9.9vw;
 }
+
 .default-scrollbar {
   width: 100%;
   height: 330px;

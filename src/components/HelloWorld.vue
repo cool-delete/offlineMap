@@ -66,6 +66,7 @@ import setPowerCom from "@/components/setPowerCom.vue";
 import { defineAsyncComponent, defineComponent, ref } from "vue";
 import { http } from "@/until/request";
 import { t } from "element-plus/lib/locale";
+import { ElNotification } from 'element-plus'
 export default defineComponent({
   //import引入的组件需要注入到对象中才能使用
   components: {
@@ -462,7 +463,7 @@ export default defineComponent({
         // @ts-ignore  
         this.$notify({
           title: '警报',
-          // duration: 0,
+          duration: 2,
           dangerouslyUseHTMLString: true,
           message: `<i class="el-notification__icon el-icon-error mynotify"></i><span>${notif}</span>
         `

@@ -44,6 +44,7 @@ export default defineConfig({
         }
       }
     },
+    chunkSizeWarningLimit: 550,
 
   },
   // optimizeDeps:{

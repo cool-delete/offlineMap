@@ -122,10 +122,10 @@ defineExpose({
 </script>
 
 <style lang="css" scoped>
-.select-tree {
-  width: 100%;
-  display: inline-block;
-  transition: 0.5s;
+.query-select.select-tree {
+  width: 11vw;
+  position: relative;
+  left: 1vw;
 }
 .select-tree .select-param-input {
   width: 100%;

@@ -21,6 +21,14 @@
       @move="movePoints"
       @close="outView"
     ></controlPlayback>
+    <FenceSetting
+      v-if="isFenceSetting"
+      @close="rollback"
+      :map="map"
+      @resetArea="resetArea"
+      @forceUpdate="resetArea('u');"
+      ref="FenceSetting"
+    ></FenceSetting>
     <Suspense>
       <template #default>
         <setPowerCom v-if="showedPower" @close="showedPower = !showedPower"></setPowerCom>
